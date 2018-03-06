@@ -11,7 +11,7 @@ defmodule Monkey.Application do
       # Start the Ecto repository
       supervisor(Monkey.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(MonkeyWeb.Endpoint, []),
+      supervisor(MonkeyWeb.Endpoint, [])
       # Start your own worker by calling: Monkey.Worker.start_link(arg1, arg2, arg3)
       # worker(Monkey.Worker, [arg1, arg2, arg3]),
     ]

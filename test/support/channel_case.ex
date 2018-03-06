@@ -25,13 +25,13 @@ defmodule MonkeyWeb.ChannelCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Monkey.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Monkey.Repo, {:shared, self()})
     end
+
     :ok
   end
-
 end
