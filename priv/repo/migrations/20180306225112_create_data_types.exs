@@ -7,5 +7,7 @@ defmodule Monkey.Repo.Migrations.CreateDataTypes do
 
       timestamps()
     end
+
+    create(unique_index(:data_types, [:name]))
   end
 end

@@ -13,5 +13,9 @@ defmodule Monkey.Repo.Migrations.CreateOrganizations do
 
       timestamps()
     end
+
+    create(unique_index(:organizations, [:name]))
+    create(unique_index(:organizations, [:email]))
+    create(unique_index(:organizations, [:billing_email]))
   end
 end

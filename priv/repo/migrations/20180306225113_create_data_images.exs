@@ -13,5 +13,7 @@ defmodule Monkey.Repo.Migrations.CreateDataImages do
 
       timestamps()
     end
+
+    create(unique_index(:data_images, [:storage_path]))
   end
 end

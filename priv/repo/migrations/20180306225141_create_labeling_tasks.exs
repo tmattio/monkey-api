@@ -8,7 +8,7 @@ defmodule Monkey.Repo.Migrations.CreateLabelingTasks do
       add(:user_id, references(:users, on_delete: :nothing))
       add(:dataset_id, references(:datasets, on_delete: :nothing))
 
-      timestamps()
+      timestamps(updated_at: false)
     end
 
     create(index(:labeling_tasks, [:user_id]))

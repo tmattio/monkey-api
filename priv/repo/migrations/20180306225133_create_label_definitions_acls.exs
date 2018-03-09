@@ -3,7 +3,7 @@ defmodule Monkey.Repo.Migrations.CreateLabelDefinitionsAcls do
 
   def change do
     create table(:label_definitions_acls) do
-      add(:type_id, references(:label_types, on_delete: :nothing))
+      add(:data_type_id, references(:label_types, on_delete: :nothing))
 
       add(
         :image_classification_id,
@@ -11,7 +11,7 @@ defmodule Monkey.Repo.Migrations.CreateLabelDefinitionsAcls do
       )
 
       add(
-        :object_detection_id,
+        :image_bounding_box_id,
         references(:label_image_bounding_box_definitions, on_delete: :nothing)
       )
 
@@ -20,9 +20,9 @@ defmodule Monkey.Repo.Migrations.CreateLabelDefinitionsAcls do
       timestamps()
     end
 
-    create(index(:label_definitions_acls, [:type_id]))
-    create(index(:label_definitions_acls, [:image_classification_id]))
-    create(index(:label_definitions_acls, [:object_detection_id]))
-    create(index(:label_definitions_acls, [:dataset_id]))
+    create(index(:label_definitions_acls, [:data_type_id]))
+    create(unique_index(:label_definitions_acls, [:image_classification_id]))
+    create(unique_index(:label_definitions_acls, [:image_bounding_box_id]))
+    create(unique_index(:label_definitions_acls, [:dataset_id]))
   end
 end

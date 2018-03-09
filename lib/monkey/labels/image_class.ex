@@ -2,8 +2,14 @@ defmodule Monkey.Labels.ImageClass do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Monkey.Datasets.LabelACL
+
+  @required_fields ~w(class)a
+
   schema "label_image_classes" do
     field(:class, :string)
+
+    has_one(:label_acl, LabelACL, foreign_key: :label_acl_id)
 
     timestamps()
   end
@@ -11,7 +17,7 @@ defmodule Monkey.Labels.ImageClass do
   @doc false
   def changeset(image_class, attrs) do
     image_class
-    |> cast(attrs, [:class])
-    |> validate_required([:class])
+    |> cast(attrs, @required_fields)
+    |> validate_required(@required_fields)
   end
 end

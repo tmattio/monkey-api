@@ -18,5 +18,8 @@ defmodule Monkey.Repo.Migrations.CreateUsers do
     end
 
     create(index(:users, [:organization_id]))
+
+    create(unique_index(:users, [:username]))
+    create(unique_index(:users, [:email]))
   end
 end

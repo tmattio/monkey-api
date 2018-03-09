@@ -13,5 +13,7 @@ defmodule Monkey.Repo.Migrations.CreateDataVideos do
 
       timestamps()
     end
+
+    create(unique_index(:data_videos, [:storage_path]))
   end
 end

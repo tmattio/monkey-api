@@ -21,5 +21,8 @@ defmodule Monkey.Repo.Migrations.CreateDatasets do
     create(index(:datasets, [:data_type_id]))
     create(index(:datasets, [:user_owner_id]))
     create(index(:datasets, [:company_owner_id]))
+
+    create(unique_index(:datasets, [:user_owner_id, :name], name: :index_users_datasets))
+    create(unique_index(:datasets, [:company_owner_id, :name], name: :index_companies_datasets))
   end
 end
