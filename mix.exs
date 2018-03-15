@@ -38,7 +38,12 @@ defmodule Monkey.Mixfile do
       {:phoenix_ecto, "~> 3.2"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"}
+      {:cowboy, "~> 1.0"},
+      {:absinthe, "~> 1.4.8"},
+      {:absinthe_ecto, "~> 0.1.3"},
+      {:absinthe_plug, "~> 1.4.2"},
+      {:poison, "~> 3.1.0"},
+      {:faker, "~> 0.9.0"}
     ]
   end
 

@@ -21,8 +21,8 @@ defmodule Monkey.Datasets.Dataset do
     field(:thumbnail_url, :string)
 
     belongs_to(:data_type, DataType, foreign_key: :data_type_id)
-    belongs_to(:user_owner, User, foreign_key: :user_id)
-    belongs_to(:company_owner, Organization, foreign_key: :organization_id)
+    belongs_to(:user_owner, User, foreign_key: :user_owner_id)
+    belongs_to(:company_owner, Organization, foreign_key: :company_owner_id)
 
     has_many(:data_acls, DataACL, foreign_key: :data_acl_id)
     has_many(:dataset_followers, DatasetFollower, foreign_key: :dataset_follower_id)

@@ -5,12 +5,10 @@ defmodule MonkeyWeb.Router do
     plug(:accepts, ["json"])
   end
 
-  scope "/api", MonkeyWeb do
+  scope "/api" do
     pipe_through(:api)
 
-    resources("/organizations", OrganizationController, except: [:new, :edit])
-    resources("/users", UserController, except: [:new, :edit])
-    resources("/datasets", DatasetController, except: [:new, :edit])
-    resources("/labeling_tasks", LabelingTaskController, except: [:new, :edit])
+    forward("/graphiql", Absinthe.Plug.GraphiQL, schema: MonkeyWeb.Schema)
+    forward("/", Absinthe.Plug, schema: MonkeyWeb.Schema)
   end
 end

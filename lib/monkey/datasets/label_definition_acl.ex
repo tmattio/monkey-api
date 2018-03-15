@@ -11,8 +11,19 @@ defmodule Monkey.Datasets.LabelDefinitionACL do
 
   schema "label_definitions_acls" do
     belongs_to(:label_type, LabelType, foreign_key: :label_type_id)
-    belongs_to(:image_classification, ImageClassificationDefinition, foreign_key: :image_classification_definition_id)
-    belongs_to(:image_bounding_box, ImageBoundingBoxDefinition, foreign_key: :image_bounding_box_definition_id)
+
+    belongs_to(
+      :image_classification,
+      ImageClassificationDefinition,
+      foreign_key: :image_classification_definition_id
+    )
+
+    belongs_to(
+      :image_bounding_box,
+      ImageBoundingBoxDefinition,
+      foreign_key: :image_bounding_box_definition_id
+    )
+
     belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
 
     timestamps()
