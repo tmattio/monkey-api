@@ -14,13 +14,13 @@ defmodule Monkey.Datasets.Dataset do
     field(:description, :string)
     field(:is_archived, :boolean, default: false)
     field(:is_private, :boolean, default: false)
-    field(:label_definition_id, :binary)
     field(:license, :string)
     field(:name, :string)
     field(:tag_list, {:array, :string})
     field(:thumbnail_url, :string)
 
     belongs_to(:data_type, DataType, foreign_key: :data_type_id)
+    belongs_to(:label_definition, LabelDefinitionACL, foreign_key: :label_definition_id)
     belongs_to(:user_owner, User, foreign_key: :user_owner_id)
     belongs_to(:company_owner, Organization, foreign_key: :company_owner_id)
 

@@ -5,7 +5,7 @@ defmodule Monkey.Repo.Migrations.CreateDatasets do
     create table(:datasets) do
       add(:name, :string)
       add(:description, :text)
-      add(:label_definition_id, :binary)
+      add(:label_definition_id, :id)
       add(:tag_list, {:array, :string})
       add(:is_archived, :boolean, default: false, null: false)
       add(:is_private, :boolean, default: false, null: false)
@@ -21,6 +21,7 @@ defmodule Monkey.Repo.Migrations.CreateDatasets do
     create(index(:datasets, [:data_type_id]))
     create(index(:datasets, [:user_owner_id]))
     create(index(:datasets, [:company_owner_id]))
+    create(index(:datasets, [:label_definition_id]))
 
     create(unique_index(:datasets, [:user_owner_id, :name], name: :index_users_datasets))
     create(unique_index(:datasets, [:company_owner_id, :name], name: :index_companies_datasets))

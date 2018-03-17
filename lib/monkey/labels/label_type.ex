@@ -3,7 +3,7 @@ defmodule Monkey.Labels.LabelType do
   import Ecto.Changeset
 
   alias Monkey.Datapoints.DataType
-  alias Monkey.Datasets.LabelACL
+  alias Monkey.Datasets.{LabelACL, LabelDefinitionACL}
 
   @required_fields ~w(name data_type_id)a
 
@@ -14,8 +14,6 @@ defmodule Monkey.Labels.LabelType do
 
     has_many(:label_acls, LabelACL, foreign_key: :label_acl_id)
     has_many(:label_definition_acls, LabelDefinitionACL, foreign_key: :label_definition_acl_id)
-
-    timestamps()
   end
 
   @doc false

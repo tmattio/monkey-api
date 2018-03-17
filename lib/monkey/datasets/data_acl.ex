@@ -10,12 +10,10 @@ defmodule Monkey.Datasets.DataACL do
 
   schema "data_acls" do
     belongs_to(:data_type, DataType, foreign_key: :data_type_id)
-    belongs_to(:image, Image, foreign_key: :data_image_id)
-    belongs_to(:text, Text, foreign_key: :data_text_id)
-    belongs_to(:video, Video, foreign_key: :data_video_id)
+    belongs_to(:image, Image, foreign_key: :image_id)
+    belongs_to(:text, Text, foreign_key: :text_id)
+    belongs_to(:video, Video, foreign_key: :video_id)
     belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
-
-    timestamps()
   end
 
   @doc false
@@ -23,7 +21,6 @@ defmodule Monkey.Datasets.DataACL do
     data_acl
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
-    |> unique_constraint(:dataset_id)
     |> unique_constraint(:image_id)
     |> unique_constraint(:video_id)
     |> unique_constraint(:text_id)

@@ -4,18 +4,16 @@ defmodule Monkey.Datasets.LabelACL do
 
   alias Monkey.Datasets.Dataset
   alias Monkey.Labels.LabelType
-  alias Monkey.Labels.{ImageClassification, ImageBoundingBox}
+  alias Monkey.Labels.{ImageClass, ImageBoundingBox}
 
-  @required_fields ~w(data_type_id dataset_id)a
-  @optional_fields ~w(image_classification_id image_bounding_box_id)a
+  @required_fields ~w(label_type_id dataset_id)a
+  @optional_fields ~w(image_class_id image_bounding_box_id)a
 
   schema "label_acls" do
     belongs_to(:label_type, LabelType, foreign_key: :label_type_id)
-    belongs_to(:image_classification, ImageClassification, foreign_key: :image_classification_id)
+    belongs_to(:image_class, ImageClass, foreign_key: :image_class_id)
     belongs_to(:image_bounding_box, ImageBoundingBox, foreign_key: :image_bounding_box_id)
     belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
-
-    timestamps()
   end
 
   @doc false
@@ -24,7 +22,7 @@ defmodule Monkey.Datasets.LabelACL do
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> unique_constraint(:dataset_id)
-    |> unique_constraint(:image_classification_id)
+    |> unique_constraint(:image_class_id)
     |> unique_constraint(:image_bounding_box_id)
   end
 end

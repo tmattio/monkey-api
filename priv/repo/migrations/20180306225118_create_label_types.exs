@@ -5,8 +5,6 @@ defmodule Monkey.Repo.Migrations.CreateLabelTypes do
     create table(:label_types) do
       add(:name, :string)
       add(:data_type_id, references(:data_types, on_delete: :nothing))
-
-      timestamps()
     end
 
     create(index(:label_types, [:data_type_id]))

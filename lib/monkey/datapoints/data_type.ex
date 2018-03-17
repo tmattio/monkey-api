@@ -13,8 +13,6 @@ defmodule Monkey.Datapoints.DataType do
     has_many(:data_acls, DataACL, foreign_key: :data_acl_id)
     has_many(:datasets, Dataset, foreign_key: :dataset_id)
     has_many(:label_types, LabelType, foreign_key: :label_type_id)
-
-    timestamps()
   end
 
   @doc false

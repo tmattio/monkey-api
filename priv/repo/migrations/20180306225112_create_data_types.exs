@@ -4,8 +4,6 @@ defmodule Monkey.Repo.Migrations.CreateDataTypes do
   def change do
     create table(:data_types) do
       add(:name, :string)
-
-      timestamps()
     end
 
     create(unique_index(:data_types, [:name]))

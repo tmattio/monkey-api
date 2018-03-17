@@ -2,31 +2,26 @@ defmodule Monkey.Datasets.LabelDefinitionACL do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Monkey.Datasets.Dataset
-  alias Monkey.Datapoints.LabelType
-  alias Monkey.Labels.{ImageClassificationDefinition, ImageBoundingBoxDefinition}
+  alias Monkey.Datasets.{Dataset}
+  alias Monkey.Labels.{LabelType, ImageClassDefinition, ImageBoundingBoxDefinition}
 
-  @required_fields ~w(data_type_id dataset_id)a
-  @optional_fields ~w(image_classification_id image_bounding_box_id)a
+  @required_fields ~w(label_type_id dataset_id)a
+  @optional_fields ~w(image_class_id image_bounding_box_id)a
 
   schema "label_definitions_acls" do
     belongs_to(:label_type, LabelType, foreign_key: :label_type_id)
 
     belongs_to(
-      :image_classification,
-      ImageClassificationDefinition,
-      foreign_key: :image_classification_definition_id
+      :image_class,
+      ImageClassDefinition,
+      foreign_key: :image_class_id
     )
 
     belongs_to(
       :image_bounding_box,
       ImageBoundingBoxDefinition,
-      foreign_key: :image_bounding_box_definition_id
+      foreign_key: :image_bounding_box_id
     )
-
-    belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
-
-    timestamps()
   end
 
   @doc false
@@ -35,7 +30,7 @@ defmodule Monkey.Datasets.LabelDefinitionACL do
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> unique_constraint(:dataset_id)
-    |> unique_constraint(:image_classification_id)
+    |> unique_constraint(:image_class_id)
     |> unique_constraint(:image_bounding_box_id)
   end
 end

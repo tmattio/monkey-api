@@ -17,4 +17,14 @@ defmodule MonkeyWeb.Schema.DatasetTypes do
     field(:user_owner, :id)
     field(:company_owner, :id)
   end
+
+  input_object :update_dataset_input do
+    field(:name, :string)
+    field(:description, :string)
+    field(:is_archived, :boolean)
+    field(:is_private, :boolean)
+    field(:license, :string)
+    field(:tag_list, list_of(:string))
+    field(:thumbnail_url, :string)
+  end
 end
