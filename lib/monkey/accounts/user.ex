@@ -6,7 +6,7 @@ defmodule Monkey.Accounts.User do
   alias Monkey.Datasets.{DatasetFollower, DatasetStargazer, Dataset}
   alias Monkey.LabelingTasks.LabelingTask
 
-  @required_fields ~w(email is_active password username)a
+  @required_fields ~w(email is_active password name username)a
   @optional_fields ~w(avatar_url bio company last_login website_url organization_id)a
 
   schema "users" do
@@ -17,6 +17,7 @@ defmodule Monkey.Accounts.User do
     field(:is_active, :boolean, default: false)
     field(:last_login, :naive_datetime)
     field(:password, :string)
+    field(:name, :string)
     field(:username, :string, unique: true)
     field(:website_url, :string)
 

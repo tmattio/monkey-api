@@ -6,6 +6,7 @@ defmodule Monkey.Repo.Migrations.CreateUsers do
       add(:email, :string)
       add(:password, :string)
       add(:username, :string)
+      add(:name, :string)
       add(:bio, :string)
       add(:avatar_url, :string)
       add(:website_url, :string)
