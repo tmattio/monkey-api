@@ -13,7 +13,7 @@ defmodule MonkeyWeb.Schema do
   query do
     @desc "Get all datasets"
     field :datasets, list_of(:dataset) do
-      resolve(&Resolvers.Dataset.list_datasets/3)
+      resolve(&Resolvers.Dataset.list_datasets/2)
     end
   end
 
@@ -28,7 +28,7 @@ defmodule MonkeyWeb.Schema do
       arg(:user_owner, non_null(:id))
       arg(:company_owner, :id)
 
-      resolve(&Resolvers.Dataset.create_dataset/3)
+      resolve(&Resolvers.Dataset.create_dataset/2)
     end
 
     @desc "Update a dataset"
@@ -36,14 +36,14 @@ defmodule MonkeyWeb.Schema do
       arg(:id, non_null(:id))
       arg(:dataset, :update_dataset_input)
 
-      resolve(&Resolvers.Dataset.update_dataset/3)
+      resolve(&Resolvers.Dataset.update_dataset/2)
     end
 
     @desc "Delete a dataset"
     field :delete_dataset, type: :dataset do
       arg(:id, non_null(:id))
 
-      resolve(&Resolvers.Dataset.delete_dataset/3)
+      resolve(&Resolvers.Dataset.delete_dataset/2)
     end
   end
 end

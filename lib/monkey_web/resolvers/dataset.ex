@@ -3,17 +3,12 @@ defmodule MonkeyWeb.Resolvers.Dataset do
   alias Monkey.Repo
   alias Monkey.Datasets.Dataset
 
-  def list_datasets(_args, %{context: %{current_user: %{id: id}}}) do
+  def list_datasets(_args, _info) do
     datasets =
       Dataset
-      |> where(dataset_id: ^id)
       |> Repo.all()
 
     {:ok, datasets}
-  end
-
-  def list_datasets(_args, _info) do
-    {:error, "Not Authorized"}
   end
 
   def create_dataset(args, _info) do
