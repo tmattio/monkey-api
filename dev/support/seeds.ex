@@ -1,8 +1,7 @@
 defmodule Monkey.Seeds do
   def run() do
     alias Monkey.Repo
-    alias Monkey.Accounts.{Organization, User}
-    alias Monkey.Datasets.{Dataset, LabelACL, LabelDefinitionACL, DataACL}
+    alias Monkey.Datasets.{LabelACL, LabelDefinitionACL, DataACL}
     alias Monkey.Labels.{LabelType, ImageClass, ImageClassDefinition}
     alias Monkey.Datapoints.{DataType, Image}
 
@@ -72,15 +71,15 @@ defmodule Monkey.Seeds do
         }
         |> Repo.insert!()
 
-      dogs_and_cats =
-        %Dataset{
+      {:ok, dataset} =
+        Monkey.Datasets.create_dataset(%{
           name: "Dogs and Cats",
           description: "A collection of images of cats and dogs.",
           tag_list: ["Dog", "Cat"],
-          data_type: image,
-          label_definition: dogs_and_cats_def_acl
-        }
-        |> Repo.insert!()
+          data_type_id: image.id,
+          label_definition_id: dogs_and_cats_def_acl.id,
+          user_owner_id: user.id
+        })
 
       image_1 =
         %Image{
@@ -98,7 +97,7 @@ defmodule Monkey.Seeds do
         %DataACL{
           data_type: image,
           image: image_1,
-          dataset: dogs_and_cats
+          dataset: dataset
         }
         |> Repo.insert!()
 
@@ -112,7 +111,7 @@ defmodule Monkey.Seeds do
         %LabelACL{
           label_type: image_class_label_type,
           image_class: image_1_label,
-          dataset: dogs_and_cats
+          dataset: dataset
         }
         |> Repo.insert!()
 
@@ -131,7 +130,7 @@ defmodule Monkey.Seeds do
         %DataACL{
           data_type: image,
           image: image_2,
-          dataset: dogs_and_cats
+          dataset: dataset
         }
         |> Repo.insert!()
 
@@ -145,7 +144,7 @@ defmodule Monkey.Seeds do
         %LabelACL{
           label_type: image_class_label_type,
           image_class: image_2_label,
-          dataset: dogs_and_cats
+          dataset: dataset
         }
         |> Repo.insert!()
     end
