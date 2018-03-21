@@ -9,7 +9,6 @@
             "name": "Start Phoenix",
             "request": "launch",
             "task": "phx.server",
-            "startApps": true,
             "projectDir": "${workspaceRoot}",
             "excludeModules": [
                 "Bcrypt.Base"
