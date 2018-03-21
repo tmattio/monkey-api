@@ -1,6 +1,10 @@
 defmodule MonkeyWeb.Router do
   use MonkeyWeb, :router
 
+  pipeline :allow_cors do
+    plug(CORSPlug)
+  end
+
   pipeline :current_user do
     plug(MonkeyWeb.Plug.Context)
   end
@@ -10,7 +14,7 @@ defmodule MonkeyWeb.Router do
   end
 
   scope "/api" do
-    pipe_through([:bearer_auth, :current_user])
+    pipe_through([:allow_cors, :bearer_auth, :current_user])
 
     forward("/", Absinthe.Plug, schema: MonkeyWeb.Schema)
   end
