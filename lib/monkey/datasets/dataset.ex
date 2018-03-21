@@ -63,8 +63,8 @@ defmodule Monkey.Datasets.Dataset do
   end
 
   defp slugify_name(changeset) do
-    if title = get_change(changeset, :title) do
-      put_change(changeset, :slug, slugify(title))
+    if name = get_change(changeset, :name) do
+      put_change(changeset, :slug, slugify(name))
     else
       changeset
     end

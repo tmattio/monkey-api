@@ -17,6 +17,7 @@ defmodule MonkeyWeb.Schema.DatasetTypes do
     field(:label_definition_id, :id)
     field(:license, :string)
     field(:name, :string)
+    field(:slug, :string)
     field(:tag_list, list_of(:string))
     field(:thumbnail_url, :string)
     field(:data_type, :data_type, resolve: assoc(:data_type))
