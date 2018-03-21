@@ -8,7 +8,7 @@ defmodule Monkey.Datasets.Dataset do
   alias Monkey.LabelingTasks.LabelingTask
 
   @required_fields ~w(is_archived is_private label_definition_id name data_type_id)a
-  @optional_fields ~w(description license tag_list thumbnail_url user_owner_id company_owner_id)a
+  @optional_fields ~w(description license tag_list thumbnail_url slug user_owner_id company_owner_id)a
 
   schema "datasets" do
     field(:description, :string)
@@ -16,6 +16,7 @@ defmodule Monkey.Datasets.Dataset do
     field(:is_private, :boolean, default: false)
     field(:license, :string)
     field(:name, :string)
+    field(:slug, :string)
     field(:tag_list, {:array, :string})
     field(:thumbnail_url, :string)
 
@@ -24,12 +25,12 @@ defmodule Monkey.Datasets.Dataset do
     belongs_to(:user_owner, User, foreign_key: :user_owner_id)
     belongs_to(:company_owner, Organization, foreign_key: :company_owner_id)
 
-    has_many(:data_acls, DataACL, foreign_key: :data_acl_id)
-    has_many(:dataset_followers, DatasetFollower, foreign_key: :dataset_follower_id)
-    has_many(:dataset_stargazers, DatasetStargazer, foreign_key: :dataset_stargazer_id)
-    has_many(:label_acls, LabelACL, foreign_key: :label_acl_id)
-    has_many(:label_definition_acls, LabelDefinitionACL, foreign_key: :label_definition_acl_id)
-    has_many(:labeling_tasks, LabelingTask, foreign_key: :labeling_task_id)
+    has_many(:data_acls, DataACL, foreign_key: :dataset_id)
+    has_many(:dataset_followers, DatasetFollower, foreign_key: :dataset_id)
+    has_many(:dataset_stargazers, DatasetStargazer, foreign_key: :dataset_id)
+    has_many(:label_acls, LabelACL, foreign_key: :dataset_id)
+    has_many(:label_definition_acls, LabelDefinitionACL, foreign_key: :dataset_id)
+    has_many(:labeling_tasks, LabelingTask, foreign_key: :dataset_id)
 
     timestamps()
   end
@@ -53,7 +54,25 @@ defmodule Monkey.Datasets.Dataset do
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> validate_required_inclusion([:user_owner_id, :company_owner_id])
+    |> assoc_constraint(:data_type)
+    |> assoc_constraint(:label_definition)
     |> unique_constraint(:user_datasets, name: :index_users_datasets)
     |> unique_constraint(:company_datasets, name: :index_companies_datasets)
+    |> unique_constraint(:slug, name: :articles_slug_index)
+    |> slugify_name()
+  end
+
+  defp slugify_name(changeset) do
+    if title = get_change(changeset, :title) do
+      put_change(changeset, :slug, slugify(title))
+    else
+      changeset
+    end
+  end
+
+  defp slugify(str) do
+    str
+    |> String.downcase()
+    |> String.replace(~r/[^\w-]+/u, "-")
   end
 end

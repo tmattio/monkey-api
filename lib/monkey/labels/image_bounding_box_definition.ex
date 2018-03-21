@@ -9,7 +9,7 @@ defmodule Monkey.Labels.ImageBoundingBoxDefinition do
   schema "label_image_bounding_box_definitions" do
     field(:classes, {:array, :string})
 
-    has_one(:label_definition_acl, LabelDefinitionACL, foreign_key: :label_definition_acl_id)
+    has_one(:label_definition_acl, LabelDefinitionACL, foreign_key: :image_bounding_box_id)
 
     timestamps()
   end

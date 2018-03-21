@@ -19,6 +19,8 @@ defmodule Monkey.Datasets.DatasetStargazer do
     dataset_stargazer
     |> cast(attrs, @required_fields)
     |> validate_required(@required_fields)
+    |> assoc_constraint(:user)
+    |> assoc_constraint(:dataset)
     |> unique_constraint(:user_id, name: :dataset_stargazers_user_id_dataset_id_index)
   end
 end

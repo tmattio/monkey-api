@@ -9,7 +9,7 @@ defmodule Monkey.Labels.ImageClass do
   schema "label_image_classes" do
     field(:class, :string)
 
-    has_one(:label_acl, LabelACL, foreign_key: :label_acl_id)
+    has_one(:label_acl, LabelACL, foreign_key: :image_class_id)
 
     timestamps()
   end

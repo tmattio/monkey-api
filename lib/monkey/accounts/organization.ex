@@ -17,8 +17,8 @@ defmodule Monkey.Accounts.Organization do
     field(:name, :string, unique: true)
     field(:website_url, :string)
 
-    has_many(:users, User, foreign_key: :user_id)
-    has_many(:datasets, Dataset, foreign_key: :dataset_id)
+    has_many(:users, User, foreign_key: :organization_id)
+    has_many(:datasets, Dataset, foreign_key: :company_owner_id)
 
     timestamps()
   end

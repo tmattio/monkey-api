@@ -16,7 +16,7 @@ defmodule Monkey.Datapoints.Video do
     field(:storage_path, :string, unique: true)
     field(:width, :integer)
 
-    has_one(:data_acl, DataACL, foreign_key: :data_acl_id)
+    has_one(:data_acl, DataACL, foreign_key: :video_id)
 
     timestamps()
   end

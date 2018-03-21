@@ -10,6 +10,7 @@ defmodule Monkey.Datasets.LabelDefinitionACL do
 
   schema "label_definitions_acls" do
     belongs_to(:label_type, LabelType, foreign_key: :label_type_id)
+    belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
 
     belongs_to(
       :image_class,
@@ -29,6 +30,9 @@ defmodule Monkey.Datasets.LabelDefinitionACL do
     label_definition_acl
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
+    |> assoc_constraint(:label_type)
+    |> assoc_constraint(:image_class)
+    |> assoc_constraint(:image_bounding_box)
     |> unique_constraint(:dataset_id)
     |> unique_constraint(:image_class_id)
     |> unique_constraint(:image_bounding_box_id)

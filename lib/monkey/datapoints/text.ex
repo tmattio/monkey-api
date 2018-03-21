@@ -10,7 +10,7 @@ defmodule Monkey.Datapoints.Text do
     field(:body, :string)
     field(:length, :integer)
 
-    has_one(:data_acl, DataACL, foreign_key: :data_acl_id)
+    has_one(:data_acl, DataACL, foreign_key: :text_id)
 
     timestamps()
   end

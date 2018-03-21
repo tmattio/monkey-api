@@ -23,5 +23,7 @@ defmodule Monkey.LabelingTasks.LabelingTask do
     labeling_task
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
+    |> assoc_constraint(:user)
+    |> assoc_constraint(:dataset)
   end
 end

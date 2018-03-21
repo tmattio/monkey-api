@@ -23,10 +23,10 @@ defmodule Monkey.Accounts.User do
 
     belongs_to(:organizations, Organization, foreign_key: :organization_id)
 
-    has_many(:dataset_followers, DatasetFollower, foreign_key: :dataset_follower_id)
-    has_many(:dataset_stargazers, DatasetStargazer, foreign_key: :dataset_stargazer_id)
-    has_many(:datasets, Dataset, foreign_key: :dataset_id)
-    has_many(:labeling_tasks, LabelingTask, foreign_key: :labeling_task_id)
+    has_many(:dataset_followers, DatasetFollower, foreign_key: :user_id)
+    has_many(:dataset_stargazers, DatasetStargazer, foreign_key: :user_id)
+    has_many(:datasets, Dataset, foreign_key: :user_owner_id)
+    has_many(:labeling_tasks, LabelingTask, foreign_key: :user_id)
 
     timestamps()
   end

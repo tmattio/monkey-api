@@ -4,6 +4,7 @@ defmodule Monkey.Repo.Migrations.CreateDatasets do
   def change do
     create table(:datasets) do
       add(:name, :string)
+      add(:slug, :string)
       add(:description, :text)
       add(:label_definition_id, :id)
       add(:tag_list, {:array, :string})

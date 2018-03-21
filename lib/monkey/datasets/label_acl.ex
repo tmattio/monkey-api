@@ -21,6 +21,10 @@ defmodule Monkey.Datasets.LabelACL do
     label_acl
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
+    |> assoc_constraint(:label_type)
+    |> assoc_constraint(:image_class)
+    |> assoc_constraint(:image_bounding_box)
+    |> assoc_constraint(:dataset)
     |> unique_constraint(:dataset_id)
     |> unique_constraint(:image_class_id)
     |> unique_constraint(:image_bounding_box_id)

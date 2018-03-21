@@ -13,7 +13,7 @@ defmodule Monkey.Labels.ImageBoundingBox do
     field(:y_max, :float)
     field(:y_min, :float)
 
-    has_one(:label_acl, LabelACL, foreign_key: :label_acl_id)
+    has_one(:label_acl, LabelACL, foreign_key: :image_bounding_box_id)
 
     timestamps()
   end
