@@ -5,5 +5,5 @@ defmodule MonkeyWeb.Auth.BearerAuthPipeline do
     error_handler: MonkeyWeb.Auth.ErrorHandler
 
   plug(Guardian.Plug.VerifyHeader, realm: "Bearer")
-  plug(Guardian.Plug.LoadResource)
+  plug(Guardian.Plug.LoadResource, allow_blank: true)
 end
