@@ -7,8 +7,8 @@ defmodule Monkey.Datasets.Dataset do
   alias Monkey.Datasets.{DataACL, DatasetFollower, DatasetStargazer, LabelACL, LabelDefinitionACL}
   alias Monkey.LabelingTasks.LabelingTask
 
-  @required_fields ~w(is_archived is_private label_definition_id name data_type_id)a
-  @optional_fields ~w(description license tag_list thumbnail_url slug user_owner_id company_owner_id)a
+  @required_fields ~w(is_archived is_private label_definition_id name data_type_id user_owner_id)a
+  @optional_fields ~w(description license tag_list thumbnail_url slug company_owner_id)a
 
   schema "datasets" do
     field(:description, :string)
@@ -35,30 +35,18 @@ defmodule Monkey.Datasets.Dataset do
     timestamps()
   end
 
-  def validate_required_inclusion(changeset, fields) do
-    if Enum.any?(fields, &present?(changeset, &1)) do
-      changeset
-    else
-      # Add the error to the first field only since Ecto requires a field name for each error.
-      add_error(changeset, hd(fields), "One of these fields must be present: #{inspect(fields)}")
-    end
-  end
-
-  def present?(changeset, field) do
-    get_field(changeset, field) != nil
-  end
-
   @doc false
   def changeset(dataset, attrs) do
     dataset
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
-    |> validate_required_inclusion([:user_owner_id, :company_owner_id])
+    |> assoc_constraint(:user_owner)
     |> assoc_constraint(:data_type)
     |> assoc_constraint(:label_definition)
     |> unique_constraint(:user_datasets, name: :index_users_datasets)
     |> unique_constraint(:company_datasets, name: :index_companies_datasets)
-    |> unique_constraint(:slug, name: :articles_slug_index)
+    |> unique_constraint(:user_datasets_slug, name: :index_users_datasets_slug)
+    |> unique_constraint(:company_datasets_slug, name: :index_companies_datasets_slug)
     |> slugify_name()
   end
 

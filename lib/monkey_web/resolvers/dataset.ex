@@ -3,12 +3,13 @@ defmodule MonkeyWeb.Resolvers.Dataset do
   alias Monkey.Repo
   alias Monkey.Datasets.Dataset
 
-  def list_datasets(_args, _info) do
-    datasets =
-      Dataset
-      |> Repo.all()
+  def get_dataset(%{owner: owner, name: name}, _info) do
+    dataset = Repo.get_by(Dataset, name: name)
+    {:ok, dataset}
+  end
 
-    {:ok, datasets}
+  def search_datasets(%{query: term}, _) do
+    {:ok, Monkey.Datasets.search_datasets(term)}
   end
 
   def create_dataset(args, _info) do

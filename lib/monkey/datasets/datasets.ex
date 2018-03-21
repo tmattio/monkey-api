@@ -101,4 +101,15 @@ defmodule Monkey.Datasets do
   def change_dataset(%Dataset{} = dataset) do
     Dataset.changeset(dataset, %{})
   end
+
+  @search [Dataset]
+  def search_datasets(term) do
+    pattern = "%#{term}%"
+    Enum.flat_map(@search, &search_ecto(&1, pattern))
+  end
+
+  defp search_ecto(ecto_schema, pattern) do
+    Repo.all from q in ecto_schema,
+      where: ilike(q.name, ^pattern) or ilike(q.description, ^pattern)
+  end
 end
