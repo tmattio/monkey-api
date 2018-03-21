@@ -43,11 +43,14 @@ defmodule MonkeyWeb.Schema do
 
       resolve(&Resolvers.Dataset.search_datasets/2)
     end
+
+    field :viewer, :user do
+      resolve(&Resolvers.Account.viewer/2)
+    end
   end
 
   @desc "The query root for implementing Monkey's GraphQL mutations."
   mutation do
-    @desc "Create a dataset"
     field :create_dataset, :dataset do
       arg(:name, non_null(:string))
       arg(:label_definition_id, non_null(:id))
@@ -60,7 +63,6 @@ defmodule MonkeyWeb.Schema do
       resolve(&Resolvers.Dataset.create_dataset/2)
     end
 
-    @desc "Update a dataset"
     field :update_dataset, type: :dataset do
       arg(:id, non_null(:id))
       arg(:dataset, :update_dataset_input)
@@ -68,11 +70,24 @@ defmodule MonkeyWeb.Schema do
       resolve(&Resolvers.Dataset.update_dataset/2)
     end
 
-    @desc "Delete a dataset"
     field :delete_dataset, type: :dataset do
       arg(:id, non_null(:id))
 
       resolve(&Resolvers.Dataset.delete_dataset/2)
+    end
+
+    field :update_user, type: :user do
+      arg(:id, non_null(:integer))
+      arg(:user, :update_user_input)
+
+      resolve(&Resolvers.Account.update_user/2)
+    end
+
+    field :login, type: :session do
+      arg(:username, non_null(:string))
+      arg(:password, non_null(:string))
+
+      resolve(&Resolvers.Account.login/2)
     end
   end
 end

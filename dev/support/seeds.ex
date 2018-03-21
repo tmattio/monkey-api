@@ -20,6 +20,10 @@ defmodule Monkey.Seeds do
       %DataType{name: "Video"}
       |> Repo.insert!()
 
+    _audio =
+      %DataType{name: "Audio"}
+      |> Repo.insert!()
+
     #
     # LABEL TYPE
     #
@@ -56,7 +60,7 @@ defmodule Monkey.Seeds do
         username: "tmattio",
         name: "Thibaut Mattio",
         website_url: "https://tmattio.github.io/",
-        organization: organization
+        organization_id: organization.id
       })
 
     if Mix.env() == :dev do
@@ -78,7 +82,8 @@ defmodule Monkey.Seeds do
           tag_list: ["Dog", "Cat"],
           data_type_id: image.id,
           label_definition_id: dogs_and_cats_def_acl.id,
-          user_owner_id: user.id
+          user_owner_id: user.id,
+          company_owner_id: organization.id
         })
 
       image_1 =
