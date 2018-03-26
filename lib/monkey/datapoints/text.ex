@@ -2,15 +2,15 @@ defmodule Monkey.Datapoints.Text do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Monkey.Datasets.DataACL
+  alias Monkey.Datasets.Dataset
 
-  @required_fields ~w(body length)a
+  @required_fields ~w(body length dataset_id)a
 
   schema "data_texts" do
     field(:body, :string)
     field(:length, :integer)
 
-    has_one(:data_acl, DataACL, foreign_key: :text_id)
+    belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
 
     timestamps()
   end
@@ -20,5 +20,6 @@ defmodule Monkey.Datapoints.Text do
     text
     |> cast(attrs, @required_fields)
     |> validate_required(@required_fields)
+    |> assoc_constraint(:dataset)
   end
 end

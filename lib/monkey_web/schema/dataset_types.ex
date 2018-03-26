@@ -41,6 +41,9 @@ defmodule MonkeyWeb.Schema.DatasetTypes do
 
     @desc "The User owner of the repository."
     field(:owner, non_null(:user), resolve: assoc(:user_owner))
+
+    field(:datapoints, non_null(list_of(non_null(:datapoint))))
+    field(:labels, non_null(list_of(non_null(:label))))
   end
 
   input_object :update_dataset_input do

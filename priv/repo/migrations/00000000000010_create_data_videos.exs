@@ -10,10 +10,12 @@ defmodule Monkey.Repo.Migrations.CreateDataVideos do
       add(:depth, :integer)
       add(:compression_format, :string)
       add(:duration, :integer)
+      add(:dataset_id, references(:datasets, on_delete: :nothing))
 
       timestamps()
     end
 
     create(unique_index(:data_videos, [:storage_path]))
+    create(index(:data_videos, [:dataset_id]))
   end
 end

@@ -2,15 +2,14 @@ defmodule Monkey.Datapoints.DataType do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Monkey.Datasets.{DataACL, Dataset}
+  alias Monkey.Datasets.{Dataset}
   alias Monkey.Labels.LabelType
 
-  @required_fields ~w(name)a
+  @required_fields ~w(name table_name)a
 
   schema "data_types" do
     field(:name, :string, unique: true)
 
-    has_many(:data_acls, DataACL, foreign_key: :data_type_id)
     has_many(:datasets, Dataset, foreign_key: :data_type_id)
     has_many(:label_types, LabelType, foreign_key: :data_type_id)
   end

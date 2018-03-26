@@ -2,14 +2,16 @@ defmodule Monkey.Labels.ImageBoundingBoxDefinition do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Monkey.Datasets.LabelDefinitionACL
+  alias Monkey.Datasets.Dataset
+  alias Monkey.Labels.LabelType
 
-  @required_fields ~w(classes)a
+  @required_fields ~w(classes dataset_id)a
 
   schema "label_image_bounding_box_definitions" do
     field(:classes, {:array, :string})
 
-    has_one(:label_definition_acl, LabelDefinitionACL, foreign_key: :image_bounding_box_id)
+    belongs_to(:label_type, LabelType, foreign_key: :label_type_id)
+    belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
 
     timestamps()
   end
@@ -19,5 +21,8 @@ defmodule Monkey.Labels.ImageBoundingBoxDefinition do
     image_bounding_box_definition
     |> cast(attrs, @required_fields)
     |> validate_required(@required_fields)
+    |> assoc_constraint(:dataset)
+    |> assoc_constraint(:label_type)
+    |> unique_constraint(:dataset_id)
   end
 end

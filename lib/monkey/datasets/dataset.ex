@@ -3,11 +3,14 @@ defmodule Monkey.Datasets.Dataset do
   import Ecto.Changeset
 
   alias Monkey.Accounts.{User, Organization}
+  alias Monkey.Datapoints
   alias Monkey.Datapoints.DataType
-  alias Monkey.Datasets.{DataACL, DatasetFollower, DatasetStargazer, LabelACL, LabelDefinitionACL}
+  alias Monkey.Labels
+  alias Monkey.Labels.LabelType
+  alias Monkey.Datasets.{DatasetFollower, DatasetStargazer}
   alias Monkey.LabelingTasks.LabelingTask
 
-  @required_fields ~w(is_archived is_private label_definition_id name data_type_id user_owner_id)a
+  @required_fields ~w(is_archived is_private name data_type_id label_type_id user_owner_id)a
   @optional_fields ~w(description license tag_list thumbnail_url slug company_owner_id)a
 
   schema "datasets" do
@@ -21,16 +24,24 @@ defmodule Monkey.Datasets.Dataset do
     field(:thumbnail_url, :string)
 
     belongs_to(:data_type, DataType, foreign_key: :data_type_id)
-    belongs_to(:label_definition, LabelDefinitionACL, foreign_key: :label_definition_id)
+    belongs_to(:label_type, LabelType, foreign_key: :label_type_id)
     belongs_to(:user_owner, User, foreign_key: :user_owner_id)
     belongs_to(:company_owner, Organization, foreign_key: :company_owner_id)
 
-    has_many(:data_acls, DataACL, foreign_key: :dataset_id)
-    has_many(:dataset_followers, DatasetFollower, foreign_key: :dataset_id)
-    has_many(:dataset_stargazers, DatasetStargazer, foreign_key: :dataset_id)
-    has_many(:label_acls, LabelACL, foreign_key: :dataset_id)
-    has_many(:label_definition_acls, LabelDefinitionACL, foreign_key: :dataset_id)
-    has_many(:labeling_tasks, LabelingTask, foreign_key: :dataset_id)
+    has_many(:dataset_followers, DatasetFollower)
+    has_many(:dataset_stargazers, DatasetStargazer)
+    has_many(:labeling_tasks, LabelingTask)
+
+    # Polymorphic associations, only one of these should be non-null for a dataset.
+    has_many(:data_images, Datapoints.Image)
+    has_many(:data_videos, Datapoints.Video)
+    has_many(:data_texts, Datapoints.Text)
+
+    has_many(:label_image_classes, Labels.ImageClass)
+    has_many(:label_image_bounding_boxes, Labels.ImageBoundingBox)
+
+    has_one(:label_image_class_definition, Labels.ImageClassDefinition)
+    has_one(:label_image_bounding_box_definition, Labels.ImageBoundingBoxDefinition)
 
     timestamps()
   end
@@ -42,7 +53,7 @@ defmodule Monkey.Datasets.Dataset do
     |> validate_required(@required_fields)
     |> assoc_constraint(:user_owner)
     |> assoc_constraint(:data_type)
-    |> assoc_constraint(:label_definition)
+    |> assoc_constraint(:label_type)
     |> unique_constraint(:user_datasets, name: :index_users_datasets)
     |> unique_constraint(:company_datasets, name: :index_companies_datasets)
     |> unique_constraint(:user_datasets_slug, name: :index_users_datasets_slug)

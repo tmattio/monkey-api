@@ -10,10 +10,12 @@ defmodule Monkey.Repo.Migrations.CreateDataImages do
       add(:height, :integer)
       add(:depth, :integer)
       add(:compression_format, :string)
+      add(:dataset_id, references(:datasets, on_delete: :nothing))
 
       timestamps()
     end
 
     create(unique_index(:data_images, [:storage_path]))
+    create(index(:data_images, [:dataset_id]))
   end
 end

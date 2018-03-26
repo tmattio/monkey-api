@@ -4,9 +4,57 @@ defmodule MonkeyWeb.Resolvers.Dataset do
   alias Monkey.Repo
   alias Monkey.Datasets.Dataset
 
-  def get_dataset(%{owner: owner, name: name}, _info) do
+  def get_dataset(%{owner: owner, name: name}, %Absinthe.Resolution{} = info) do
     dataset = Repo.get_by(Dataset, name: name)
-    {:ok, dataset}
+
+    preload_datapoints =
+      Enum.any?(info.definition.selections, fn element ->
+        match?(%{name: "datapoints"}, element)
+      end)
+
+    datapoints =
+      if preload_datapoints do
+        data_type = Ecto.assoc(dataset, :data_type) |> Repo.one()
+
+        case data_type.name do
+          "Image" -> Ecto.assoc(dataset, :data_images) |> Repo.all()
+          "Video" -> Ecto.assoc(dataset, :data_videos) |> Repo.all()
+          "Text" -> Ecto.assoc(dataset, :data_texts) |> Repo.all()
+          _ -> []
+        end
+      else
+        []
+      end
+
+    preload_labels =
+      Enum.any?(info.definition.selections, fn element ->
+        match?(%{name: "labels"}, element)
+      end)
+
+    labels =
+      if preload_labels do
+        label_type = Ecto.assoc(dataset, :label_type) |> Repo.one()
+
+        case label_type.name do
+          "Image Classification" ->
+            Ecto.assoc(dataset, :label_image_classes) |> Repo.all()
+
+          "Image Object Detection" ->
+            Ecto.assoc(dataset, :label_image_bounding_boxes) |> Repo.all()
+
+          _ ->
+            []
+        end
+      else
+        []
+      end
+
+    loaded_dataset =
+      dataset
+      |> Map.put_new(:datapoints, datapoints)
+      |> Map.put_new(:labels, labels)
+
+    {:ok, loaded_dataset}
   end
 
   def search_datasets(%{query: term}, _) do

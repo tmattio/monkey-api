@@ -2,9 +2,9 @@ defmodule Monkey.Datapoints.Video do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Monkey.Datasets.DataACL
+  alias Monkey.Datasets.Dataset
 
-  @required_fields ~w(compression_format depth duration height storage_path width)a
+  @required_fields ~w(compression_format depth duration height storage_path width dataset_id)a
   @optional_fields ~w(caption)a
 
   schema "data_videos" do
@@ -16,7 +16,7 @@ defmodule Monkey.Datapoints.Video do
     field(:storage_path, :string, unique: true)
     field(:width, :integer)
 
-    has_one(:data_acl, DataACL, foreign_key: :video_id)
+    belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
 
     timestamps()
   end
@@ -27,5 +27,6 @@ defmodule Monkey.Datapoints.Video do
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> unique_constraint(:storage_path)
+    |> assoc_constraint(:dataset)
   end
 end
