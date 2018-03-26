@@ -2,8 +2,6 @@ defmodule MonkeyWeb.Schema.DatasetTypes do
   use Absinthe.Schema.Notation
   use Absinthe.Ecto, repo: Monkey.Repo
 
-  alias MonkeyWeb.Resolvers
-
   @desc "A repository contains labels for a set of data."
   object :dataset do
     @desc "Identifies the primary key from the dataset."

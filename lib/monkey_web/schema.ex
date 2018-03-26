@@ -1,6 +1,24 @@
 defmodule MonkeyWeb.Schema do
   use Absinthe.Schema
 
+  alias MonkeyWeb.Resolvers
+  alias Monkey.Datasets
+
+  @impl true
+  def context(ctx) do
+    # Foo source could be a Redis source
+    loader =
+      Dataloader.new()
+      |> Dataloader.add_source(Datasets, Datasets.data())
+
+    Map.put(ctx, :loader, loader)
+  end
+
+  @impl true
+  def plugins do
+    [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
+  end
+
   import_types(Absinthe.Type.Custom)
 
   import_types(__MODULE__.AccountTypes)
@@ -8,8 +26,6 @@ defmodule MonkeyWeb.Schema do
   import_types(__MODULE__.DatasetTypes)
   import_types(__MODULE__.LabelTypes)
   import_types(__MODULE__.LabelingTaskTypes)
-
-  alias MonkeyWeb.Resolvers
 
   @desc "The query root of Monkey's GraphQL interface."
   query do

@@ -109,7 +109,16 @@ defmodule Monkey.Datasets do
   end
 
   defp search_ecto(ecto_schema, pattern) do
-    Repo.all from q in ecto_schema,
-      where: ilike(q.name, ^pattern) or ilike(q.description, ^pattern)
+    Repo.all(
+      from(q in ecto_schema, where: ilike(q.name, ^pattern) or ilike(q.description, ^pattern))
+    )
+  end
+
+  def data() do
+    Dataloader.Ecto.new(Repo, query: &query/2)
+  end
+
+  def query(queryable, _params) do
+    queryable
   end
 end

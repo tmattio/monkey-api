@@ -1,7 +1,7 @@
 defmodule MonkeyWeb.Schema.LabelTypes do
   use Absinthe.Schema.Notation
 
-  alias MonkeyWeb.Resolvers
+  use Absinthe.Ecto, repo: Monkey.Repo
   alias Monkey.Labels.{ImageClass, ImageBoundingBox}
 
   object :label_type do
@@ -11,7 +11,7 @@ defmodule MonkeyWeb.Schema.LabelTypes do
   union :label do
     description("A label in a dataset.")
 
-    types([:image_class, :image_bounding_box, :video])
+    types([:image_class, :image_bounding_box])
 
     resolve_type(fn
       %ImageClass{}, _ -> :image_class
@@ -21,6 +21,7 @@ defmodule MonkeyWeb.Schema.LabelTypes do
 
   object :image_class do
     field(:class, :string)
+    field(:datapoint, non_null(:image), resolve: assoc(:datapoint))
   end
 
   object :image_bounding_box do
@@ -29,5 +30,6 @@ defmodule MonkeyWeb.Schema.LabelTypes do
     field(:x_min, :float)
     field(:y_max, :float)
     field(:y_min, :float)
+    field(:datapoint, non_null(:image), resolve: assoc(:datapoint))
   end
 end

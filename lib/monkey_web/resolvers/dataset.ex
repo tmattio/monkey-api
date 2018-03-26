@@ -7,13 +7,12 @@ defmodule MonkeyWeb.Resolvers.Dataset do
   def get_dataset(%{owner: owner, name: name}, %Absinthe.Resolution{} = info) do
     dataset = Repo.get_by(Dataset, name: name)
 
-    preload_datapoints =
-      Enum.any?(info.definition.selections, fn element ->
-        match?(%{name: "datapoints"}, element)
-      end)
+    queried_fields =
+      Absinthe.Resolution.project(info)
+      |> Enum.map(& &1.name)
 
     datapoints =
-      if preload_datapoints do
+      if Enum.member?(queried_fields, "datapoints") do
         data_type = Ecto.assoc(dataset, :data_type) |> Repo.one()
 
         case data_type.name do
@@ -26,13 +25,8 @@ defmodule MonkeyWeb.Resolvers.Dataset do
         []
       end
 
-    preload_labels =
-      Enum.any?(info.definition.selections, fn element ->
-        match?(%{name: "labels"}, element)
-      end)
-
     labels =
-      if preload_labels do
+      if Enum.member?(queried_fields, "labels") do
         label_type = Ecto.assoc(dataset, :label_type) |> Repo.one()
 
         case label_type.name do
