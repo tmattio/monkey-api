@@ -60,6 +60,14 @@ defmodule MonkeyWeb.Schema do
       resolve(&Resolvers.Dataset.search_datasets/2)
     end
 
+    field :data_types, non_null(list_of(non_null(:data_type))) do
+      resolve(&Resolvers.Datapoint.list_data_types/2)
+    end
+
+    field :label_types, non_null(list_of(non_null(:label_type))) do
+      resolve(&Resolvers.Label.list_label_types/2)
+    end
+
     field :viewer, :user do
       resolve(&Resolvers.Account.viewer/2)
     end

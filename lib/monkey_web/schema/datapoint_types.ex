@@ -1,15 +1,15 @@
 defmodule MonkeyWeb.Schema.DatapointTypes do
   use Absinthe.Schema.Notation
 
+  use Absinthe.Ecto, repo: Monkey.Repo
   alias Monkey.Datapoints.{Image, Text, Video}
 
   object :data_type do
     field(:name, :string)
+    field(:label_types, non_null(list_of(non_null(:data_type))), resolve: assoc(:label_types))
   end
 
   union :datapoint do
-    description("A datapoint in a dataset.")
-
     types([:image, :text, :video])
 
     resolve_type(fn
