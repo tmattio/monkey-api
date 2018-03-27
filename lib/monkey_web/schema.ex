@@ -68,6 +68,12 @@ defmodule MonkeyWeb.Schema do
       resolve(&Resolvers.Label.list_label_types/2)
     end
 
+    field :user, :user do
+      arg(:username, non_null(:string))
+
+      resolve(&Resolvers.Account.get_user/2)
+    end
+
     field :viewer, :user do
       resolve(&Resolvers.Account.viewer/2)
     end
@@ -112,6 +118,15 @@ defmodule MonkeyWeb.Schema do
       arg(:password, non_null(:string))
 
       resolve(&Resolvers.Account.login/2)
+    end
+
+    field :register, type: :user do
+      arg(:email, non_null(:string))
+      arg(:name, non_null(:string))
+      arg(:username, non_null(:string))
+      arg(:password, non_null(:string))
+
+      resolve(&Resolvers.Account.register/2)
     end
   end
 end
