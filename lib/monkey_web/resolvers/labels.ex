@@ -1,4 +1,4 @@
-defmodule MonkeyWeb.Resolvers.Label do
+defmodule MonkeyWeb.Resolvers.Labels do
   alias Monkey.Repo
   alias Monkey.Labels.LabelType
 

@@ -25,8 +25,6 @@ defmodule MonkeyWeb.Schema.AccountTypes do
     field(:following, list_of(:user))
     field(:starred_datasets, list_of(:dataset))
     field(:followed_datasets, list_of(:dataset))
-
-    # field(:labeling_tasks, :string)
   end
 
   object :organization do

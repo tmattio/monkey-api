@@ -36,7 +36,7 @@ defmodule MonkeyWeb.Schema do
       @desc "The name of the dataset."
       arg(:name, non_null(:string))
 
-      resolve(&Resolvers.Dataset.get_dataset/2)
+      resolve(&Resolvers.Datasets.get_dataset/2)
     end
 
     @desc "Perform a search across datasets."
@@ -56,25 +56,25 @@ defmodule MonkeyWeb.Schema do
       @desc "The search string to look for."
       arg(:query, non_null(:string))
 
-      resolve(&Resolvers.Dataset.search_datasets/2)
+      resolve(&Resolvers.Datasets.search_datasets/2)
     end
 
     field :data_types, non_null(list_of(non_null(:data_type))) do
-      resolve(&Resolvers.Datapoint.list_data_types/2)
+      resolve(&Resolvers.Datapoints.list_data_types/2)
     end
 
     field :label_types, non_null(list_of(non_null(:label_type))) do
-      resolve(&Resolvers.Label.list_label_types/2)
+      resolve(&Resolvers.Labels.list_label_types/2)
     end
 
     field :user, :user do
       arg(:username, non_null(:string))
 
-      resolve(&Resolvers.Account.get_user/2)
+      resolve(&Resolvers.Accounts.get_user/2)
     end
 
     field :viewer, :user do
-      resolve(&Resolvers.Account.viewer/2)
+      resolve(&Resolvers.Accounts.viewer/2)
     end
   end
 
@@ -89,34 +89,34 @@ defmodule MonkeyWeb.Schema do
       arg(:user_owner, non_null(:id))
       arg(:company_owner, :id)
 
-      resolve(&Resolvers.Dataset.create_dataset/2)
+      resolve(&Resolvers.Datasets.create_dataset/2)
     end
 
     field :update_dataset, type: :dataset do
       arg(:id, non_null(:id))
       arg(:dataset, :update_dataset_input)
 
-      resolve(&Resolvers.Dataset.update_dataset/2)
+      resolve(&Resolvers.Datasets.update_dataset/2)
     end
 
     field :delete_dataset, type: :dataset do
       arg(:id, non_null(:id))
 
-      resolve(&Resolvers.Dataset.delete_dataset/2)
+      resolve(&Resolvers.Datasets.delete_dataset/2)
     end
 
     field :update_user, type: :user do
       arg(:id, non_null(:integer))
       arg(:user, :update_user_input)
 
-      resolve(&Resolvers.Account.update_user/2)
+      resolve(&Resolvers.Accounts.update_user/2)
     end
 
     field :login, type: :session do
       arg(:username, non_null(:string))
       arg(:password, non_null(:string))
 
-      resolve(&Resolvers.Account.login/2)
+      resolve(&Resolvers.Accounts.login/2)
     end
 
     field :register, type: :user do
@@ -125,7 +125,7 @@ defmodule MonkeyWeb.Schema do
       arg(:username, non_null(:string))
       arg(:password, non_null(:string))
 
-      resolve(&Resolvers.Account.register/2)
+      resolve(&Resolvers.Accounts.register/2)
     end
   end
 end

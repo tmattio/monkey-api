@@ -1,4 +1,4 @@
-defmodule MonkeyWeb.Resolvers.Dataset do
+defmodule MonkeyWeb.Resolvers.Datasets do
   import Ecto.Query, only: [where: 2]
 
   alias Monkey.Repo

@@ -1,4 +1,4 @@
-defmodule MonkeyWeb.Resolvers.Datapoint do
+defmodule MonkeyWeb.Resolvers.Datapoints do
   alias Monkey.Repo
   alias Monkey.Datapoints.DataType
 
