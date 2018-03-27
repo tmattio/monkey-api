@@ -35,7 +35,7 @@ defmodule MonkeyWeb.Schema.DatasetTypes do
     field(:data_type, non_null(:data_type), resolve: assoc(:data_type))
 
     @desc "Returns the label definition for this repository."
-    field(:label_definition_id, non_null(:id))
+    field(:label_definition, non_null(:label_definition))
 
     @desc "The User owner of the repository."
     field(:owner, non_null(:user), resolve: assoc(:user_owner))

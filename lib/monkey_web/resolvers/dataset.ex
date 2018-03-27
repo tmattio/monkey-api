@@ -43,10 +43,30 @@ defmodule MonkeyWeb.Resolvers.Dataset do
         []
       end
 
+    label_definition =
+      if Enum.member?(queried_fields, "labelDefinition") do
+        # TODO(tmattio): We query twice for the label type, refactor this.
+        label_type = Ecto.assoc(dataset, :label_type) |> Repo.one()
+
+        case label_type.name do
+          "Image Classification" ->
+            Ecto.assoc(dataset, :label_image_class_definition) |> Repo.one()
+
+          "Image Object Detection" ->
+            Ecto.assoc(dataset, :label_image_bounding_box_definition) |> Repo.one()
+
+          _ ->
+            nil
+        end
+      else
+        nil
+      end
+
     loaded_dataset =
       dataset
       |> Map.put_new(:datapoints, datapoints)
       |> Map.put_new(:labels, labels)
+      |> Map.put_new(:label_definition, label_definition)
 
     {:ok, loaded_dataset}
   end

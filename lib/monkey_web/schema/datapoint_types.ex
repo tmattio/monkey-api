@@ -20,6 +20,7 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
   end
 
   object :image do
+    field(:id, non_null(:id))
     field(:caption, :string)
     field(:compression_format, :string)
     field(:depth, :integer)
@@ -30,11 +31,13 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
   end
 
   object :text do
+    field(:id, non_null(:id))
     field(:body, :string)
     field(:length, :integer)
   end
 
   object :video do
+    field(:id, non_null(:id))
     field(:caption, :string)
     field(:compression_format, :string)
     field(:depth, :integer)
