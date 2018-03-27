@@ -5,7 +5,6 @@ defmodule Monkey.Accounts.User do
   alias Monkey.Accounts.Encryption
   alias Monkey.Accounts.Organization
   alias Monkey.Datasets.{DatasetFollower, DatasetStargazer, Dataset}
-  alias Monkey.LabelingTasks.LabelingTask
 
   @required_fields ~w(email is_active name username)a
   @optional_fields ~w(avatar_url bio company last_login website_url organization_id)a
@@ -28,7 +27,6 @@ defmodule Monkey.Accounts.User do
     has_many(:dataset_followers, DatasetFollower, foreign_key: :user_id)
     has_many(:dataset_stargazers, DatasetStargazer, foreign_key: :user_id)
     has_many(:datasets, Dataset, foreign_key: :user_owner_id)
-    has_many(:labeling_tasks, LabelingTask, foreign_key: :user_id)
 
     timestamps()
   end

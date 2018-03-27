@@ -25,7 +25,6 @@ defmodule MonkeyWeb.Schema do
   import_types(__MODULE__.DatapointTypes)
   import_types(__MODULE__.DatasetTypes)
   import_types(__MODULE__.LabelTypes)
-  import_types(__MODULE__.LabelingTaskTypes)
 
   @desc "The query root of Monkey's GraphQL interface."
   query do

@@ -8,7 +8,6 @@ defmodule Monkey.Datasets.Dataset do
   alias Monkey.Labels
   alias Monkey.Labels.LabelType
   alias Monkey.Datasets.{DatasetFollower, DatasetStargazer}
-  alias Monkey.LabelingTasks.LabelingTask
 
   @required_fields ~w(is_archived is_private name data_type_id label_type_id user_owner_id)a
   @optional_fields ~w(description license tag_list thumbnail_url slug company_owner_id)a
@@ -30,7 +29,6 @@ defmodule Monkey.Datasets.Dataset do
 
     has_many(:dataset_followers, DatasetFollower)
     has_many(:dataset_stargazers, DatasetStargazer)
-    has_many(:labeling_tasks, LabelingTask)
 
     # Polymorphic associations, only one of these should be non-null for a dataset.
     has_many(:data_images, Datapoints.Image)
