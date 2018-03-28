@@ -66,4 +66,11 @@ defmodule MonkeyWeb.Schema.AccountTypes do
     field(:name, :string)
     field(:website_url, :string)
   end
+
+  input_object :register_user_input do
+    field(:email, non_null(:string))
+    field(:name, non_null(:string))
+    field(:username, non_null(:string))
+    field(:password, non_null(:string))
+  end
 end

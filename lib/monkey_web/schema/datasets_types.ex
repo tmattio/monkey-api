@@ -53,4 +53,11 @@ defmodule MonkeyWeb.Schema.DatasetTypes do
     field(:tag_list, list_of(:string))
     field(:thumbnail_url, :string)
   end
+
+  input_object :create_dataset_input do
+    field(:name, non_null(:string))
+    field(:data_type, non_null(:string))
+    field(:label_type, non_null(:string))
+    field(:label_definition, non_null(:label_definition_input))
+  end
 end

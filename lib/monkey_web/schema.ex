@@ -80,14 +80,8 @@ defmodule MonkeyWeb.Schema do
 
   @desc "The query root for implementing Monkey's GraphQL mutations."
   mutation do
-    field :create_dataset, :dataset do
-      arg(:name, non_null(:string))
-      arg(:label_definition_id, non_null(:id))
-      arg(:data_type, non_null(:id))
-
-      # TODO(tmattio): Allow to pass either a user or a company
-      arg(:user_owner, non_null(:id))
-      arg(:company_owner, :id)
+    field :create_dataset, type: :dataset do
+      arg(:dataset, :create_dataset_input)
 
       resolve(&Resolvers.Datasets.create_dataset/2)
     end
@@ -120,10 +114,7 @@ defmodule MonkeyWeb.Schema do
     end
 
     field :register, type: :user do
-      arg(:email, non_null(:string))
-      arg(:name, non_null(:string))
-      arg(:username, non_null(:string))
-      arg(:password, non_null(:string))
+      arg(:user, :register_user_input)
 
       resolve(&Resolvers.Accounts.register/2)
     end

@@ -56,4 +56,21 @@ defmodule MonkeyWeb.Schema.LabelTypes do
   object :image_bounding_box_definition do
     field(:classes, non_null(list_of(non_null(:string))))
   end
+
+  input_object :image_class_definition_input do
+    field(:classes, non_null(list_of(non_null(:string))))
+  end
+
+  input_object :image_bounding_box_definition_input do
+    field(:classes, non_null(list_of(non_null(:string))))
+  end
+
+  # TODO(tmattio): GraphQL does not support union for input objects
+  # So we use a composition instead.
+  # There is some work in progress to support union in inputs:
+  # https://github.com/facebook/graphql/pull/395
+  input_object :label_definition_input do
+    field(:image_class_definition, :image_class_definition_input)
+    field(:image_bounding_box_definition, :image_bounding_box_definition_input)
+  end
 end
