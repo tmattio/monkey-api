@@ -25,13 +25,8 @@ defmodule Monkey.AccountsTest do
       website_url: "some updated website_url"
     }
     @invalid_attrs %{
-      avatar_url: nil,
-      billing_email: nil,
-      description: nil,
       email: nil,
-      is_active: nil,
-      name: nil,
-      website_url: nil
+      name: nil
     }
 
     def organization_fixture(attrs \\ %{}) do
@@ -106,6 +101,7 @@ defmodule Monkey.AccountsTest do
     alias Monkey.Accounts.User
 
     @valid_attrs %{
+      name: "some name",
       avatar_url: "some avatar_url",
       bio: "some bio",
       company: "some company",
@@ -117,6 +113,7 @@ defmodule Monkey.AccountsTest do
       website_url: "some website_url"
     }
     @update_attrs %{
+      name: "some updated name",
       avatar_url: "some updated avatar_url",
       bio: "some updated bio",
       company: "some updated company",
@@ -150,12 +147,13 @@ defmodule Monkey.AccountsTest do
 
     test "list_users/0 returns all users" do
       user = user_fixture()
-      assert Accounts.list_users() == [user]
+      user_list = Enum.map(Accounts.list_users(), &Map.delete(&1, :password))
+      assert user_list == [Map.delete(user, :password)]
     end
 
     test "get_user!/1 returns the user with given id" do
       user = user_fixture()
-      assert Accounts.get_user!(user.id) == user
+      assert Accounts.get_user!(user.id) |> Map.delete(:password) == user |> Map.delete(:password)
     end
 
     test "create_user/1 with valid data creates a user" do
@@ -166,7 +164,6 @@ defmodule Monkey.AccountsTest do
       assert user.email == "some email"
       assert user.is_active == true
       assert user.last_login == ~N[2010-04-17 14:00:00.000000]
-      assert user.password == "some password"
       assert user.username == "some username"
       assert user.website_url == "some website_url"
     end
@@ -185,7 +182,6 @@ defmodule Monkey.AccountsTest do
       assert user.email == "some updated email"
       assert user.is_active == false
       assert user.last_login == ~N[2011-05-18 15:01:01.000000]
-      assert user.password == "some updated password"
       assert user.username == "some updated username"
       assert user.website_url == "some updated website_url"
     end
@@ -193,7 +189,7 @@ defmodule Monkey.AccountsTest do
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
-      assert user == Accounts.get_user!(user.id)
+      assert user |> Map.delete(:password) == Accounts.get_user!(user.id) |> Map.delete(:password)
     end
 
     test "delete_user/1 deletes the user" do

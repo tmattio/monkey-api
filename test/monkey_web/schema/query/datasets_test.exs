@@ -1,16 +1,9 @@
-defmodule MonkeyWeb.Schema.Query.MenuItemsTest do
+defmodule MonkeyWeb.Schema.Query.DatasetsTest do
   use MonkeyWeb.ConnCase, async: true
-
-  alias Monkey.Datasets
-  alias Monkey.Datasets.Dataset
-
-  setup do
-    Monkey.Seeds.run()
-  end
 
   @query """
   {
-    menuItems {
+    searchDatasets(query:"") {
       name
     }
   }

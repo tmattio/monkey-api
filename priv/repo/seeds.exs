@@ -43,35 +43,35 @@ _image_bounding_box_label_type =
   %LabelType{name: "Image Object Detection", data_type: image}
   |> Repo.insert!()
 
-#
-# USERS
-#
-{:ok, organization} =
-  Monkey.Accounts.create_organization(%{
-    avatar_url:
-      "https://avatars3.githubusercontent.com/u/34143893?s=400&u=743d0834bdd76d8668fa4870003ade9882c8779c&v=4",
-    billing_email: "thibaut.mattio@gmail.com",
-    description: "We're building the future of AI",
-    email: "thibaut.mattio@gmail.com",
-    name: "Monkey Inc.",
-    website_url: "https://github.com/monkey-ai"
-  })
-
-{:ok, user} =
-  Monkey.Accounts.create_user(%{
-    avatar_url:
-      "https://avatars0.githubusercontent.com/u/6162008?s=400&u=a95c6e6963b9016f1b808e92e845ae4a527c9455&v=4",
-    bio: "I am a rockstar.",
-    company: "Monkey Inc.",
-    email: "thibaut.mattio@gmail.com",
-    password: "password",
-    username: "tmattio",
-    name: "Thibaut Mattio",
-    website_url: "https://tmattio.github.io/",
-    organization_id: organization.id
-  })
-
 if Mix.env() == :dev do
+  #
+  # USERS
+  #
+  {:ok, organization} =
+    Monkey.Accounts.create_organization(%{
+      avatar_url:
+        "https://avatars3.githubusercontent.com/u/34143893?s=400&u=743d0834bdd76d8668fa4870003ade9882c8779c&v=4",
+      billing_email: "thibaut.mattio@gmail.com",
+      description: "We're building the future of AI",
+      email: "thibaut.mattio@gmail.com",
+      name: "Monkey Inc.",
+      website_url: "https://github.com/monkey-ai"
+    })
+
+  {:ok, user} =
+    Monkey.Accounts.create_user(%{
+      avatar_url:
+        "https://avatars0.githubusercontent.com/u/6162008?s=400&u=a95c6e6963b9016f1b808e92e845ae4a527c9455&v=4",
+      bio: "I am a rockstar.",
+      company: "Monkey Inc.",
+      email: "thibaut.mattio@gmail.com",
+      password: "password",
+      username: "tmattio",
+      name: "Thibaut Mattio",
+      website_url: "https://tmattio.github.io/",
+      organization_id: organization.id
+    })
+
   {:ok, dataset} =
     Monkey.Datasets.create_dataset(%{
       name: "Dogs and Cats",

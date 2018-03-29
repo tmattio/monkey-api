@@ -2,46 +2,60 @@ defmodule Monkey.DatasetsTest do
   use Monkey.DataCase
 
   alias Monkey.Datasets
+  alias Monkey.Accounts
 
   describe "datasets" do
     alias Monkey.Datasets.Dataset
+
+    def user_factory do
+      {:ok, user} =
+        Accounts.create_user(%{
+          username: "username",
+          name: "name",
+          email: "example@email.com",
+          password: "password"
+        })
+
+      user
+    end
 
     @valid_attrs %{
       description: "some description",
       is_archived: true,
       is_private: true,
-      label_definition_id: "some label_definition_id",
       license: "some license",
       name: "some name",
       tag_list: [],
-      thumbnail_url: "some thumbnail_url"
+      thumbnail_url: "some thumbnail_url",
+      data_type_id: 1,
+      label_type_id: 1
     }
     @update_attrs %{
       description: "some updated description",
       is_archived: false,
       is_private: false,
-      label_definition_id: "some updated label_definition_id",
       license: "some updated license",
       name: "some updated name",
       tag_list: [],
       thumbnail_url: "some updated thumbnail_url"
     }
     @invalid_attrs %{
-      description: nil,
-      is_archived: nil,
-      is_private: nil,
+      user_owner_id: nil,
+      data_type_id: nil,
+      label_type_id: nil,
       label_definition_id: nil,
-      license: nil,
-      name: nil,
-      tag_list: nil,
-      thumbnail_url: nil
+      name: nil
     }
 
     def dataset_fixture(attrs \\ %{}) do
-      {:ok, dataset} =
+      user = user_factory()
+
+      dataset_attrs =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Datasets.create_dataset()
+        |> Map.put(:user_owner_id, user.id)
+
+      {:ok, dataset} = Datasets.create_dataset(dataset_attrs)
 
       dataset
     end
@@ -57,11 +71,10 @@ defmodule Monkey.DatasetsTest do
     end
 
     test "create_dataset/1 with valid data creates a dataset" do
-      assert {:ok, %Dataset{} = dataset} = Datasets.create_dataset(@valid_attrs)
+      dataset = dataset_fixture()
       assert dataset.description == "some description"
       assert dataset.is_archived == true
       assert dataset.is_private == true
-      assert dataset.label_definition_id == "some label_definition_id"
       assert dataset.license == "some license"
       assert dataset.name == "some name"
       assert dataset.tag_list == []
@@ -79,7 +92,6 @@ defmodule Monkey.DatasetsTest do
       assert dataset.description == "some updated description"
       assert dataset.is_archived == false
       assert dataset.is_private == false
-      assert dataset.label_definition_id == "some updated label_definition_id"
       assert dataset.license == "some updated license"
       assert dataset.name == "some updated name"
       assert dataset.tag_list == []
