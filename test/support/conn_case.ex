@@ -20,6 +20,7 @@ defmodule MonkeyWeb.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       import MonkeyWeb.Router.Helpers
+      import Monkey.Factory
 
       # The default endpoint for testing
       @endpoint MonkeyWeb.Endpoint
