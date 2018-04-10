@@ -13,7 +13,7 @@ defmodule Monkey.Repo.Migrations.CreateDatasets do
       add(:license, :text)
       add(:data_type_id, references(:data_types, on_delete: :nothing))
       add(:label_type_id, references(:label_types, on_delete: :nothing))
-      add(:user_owner_id, references(:users, on_delete: :nothing))
+      add(:user_owner_id, references(:users, on_delete: :delete_all))
       add(:company_owner_id, references(:organizations, on_delete: :nothing))
 
       timestamps()

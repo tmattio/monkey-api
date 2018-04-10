@@ -33,7 +33,7 @@ defmodule MonkeyWeb.Schema do
       @desc "The login field of a user or organization."
       arg(:owner, non_null(:string))
 
-      @desc "The name of the dataset."
+      @desc "The unique name of the dataset."
       arg(:name, non_null(:string))
 
       resolve(&Resolvers.Datasets.get_dataset/2)
@@ -73,7 +73,7 @@ defmodule MonkeyWeb.Schema do
       resolve(&Resolvers.Accounts.get_user/2)
     end
 
-    field :viewer, :user do
+    field :viewer, non_null(:user) do
       resolve(&Resolvers.Accounts.viewer/2)
     end
   end
@@ -81,29 +81,35 @@ defmodule MonkeyWeb.Schema do
   @desc "The query root for implementing Monkey's GraphQL mutations."
   mutation do
     field :create_dataset, type: :dataset do
-      arg(:dataset, :create_dataset_input)
+      arg(:dataset, non_null(:create_dataset_input))
 
       resolve(&Resolvers.Datasets.create_dataset/2)
     end
 
     field :update_dataset, type: :dataset do
-      arg(:id, non_null(:id))
-      arg(:dataset, :update_dataset_input)
+      arg(:owner, non_null(:string))
+      arg(:name, non_null(:string))
+      arg(:dataset, non_null(:update_dataset_input))
 
       resolve(&Resolvers.Datasets.update_dataset/2)
     end
 
     field :delete_dataset, type: :dataset do
-      arg(:id, non_null(:id))
+      arg(:owner, non_null(:string))
+      arg(:name, non_null(:string))
 
       resolve(&Resolvers.Datasets.delete_dataset/2)
     end
 
-    field :update_user, type: :user do
-      arg(:id, non_null(:integer))
-      arg(:user, :update_user_input)
+    field :update_viewer, type: :user do
+      arg(:user, non_null(:update_user_input))
 
-      resolve(&Resolvers.Accounts.update_user/2)
+      resolve(&Resolvers.Accounts.update_viewer/2)
+    end
+
+    field :delete_viewer, type: :user do
+
+      resolve(&Resolvers.Accounts.delete_viewer/2)
     end
 
     field :login, type: :session do
@@ -113,8 +119,8 @@ defmodule MonkeyWeb.Schema do
       resolve(&Resolvers.Accounts.login/2)
     end
 
-    field :register, type: :user do
-      arg(:user, :register_user_input)
+    field :register, type: :session do
+      arg(:user, non_null(:register_user_input))
 
       resolve(&Resolvers.Accounts.register/2)
     end

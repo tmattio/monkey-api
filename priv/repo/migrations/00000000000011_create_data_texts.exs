@@ -5,7 +5,7 @@ defmodule Monkey.Repo.Migrations.CreateDataTexts do
     create table(:data_texts) do
       add(:body, :text)
       add(:length, :integer)
-      add(:dataset_id, references(:datasets, on_delete: :nothing))
+      add(:dataset_id, references(:datasets, on_delete: :delete_all))
 
       timestamps()
     end

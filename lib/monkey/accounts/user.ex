@@ -24,8 +24,8 @@ defmodule Monkey.Accounts.User do
 
     belongs_to(:organization, Organization, foreign_key: :organization_id)
 
-    has_many(:dataset_followers, DatasetFollower, foreign_key: :user_id)
-    has_many(:dataset_stargazers, DatasetStargazer, foreign_key: :user_id)
+    has_many(:dataset_followers, DatasetFollower, foreign_key: :user_id, on_delete: :delete_all)
+    has_many(:dataset_stargazers, DatasetStargazer, foreign_key: :user_id, on_delete: :delete_all)
     has_many(:datasets, Dataset, foreign_key: :user_owner_id)
 
     timestamps()

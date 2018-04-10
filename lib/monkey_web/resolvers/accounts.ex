@@ -10,18 +10,17 @@ defmodule MonkeyWeb.Resolvers.Accounts do
     {:ok, user}
   end
 
-  def update_user(%{id: id, user: user_params}, _info) do
-    Repo.get!(User, id)
-    |> User.changeset(user_params)
-    |> Repo.update()
-  end
-
   def register(_, %{context: %{current_user: _current_user}}) do
     {:error, "You are already authenticated."}
   end
 
-  def register(params, _info) do
-    Accounts.create_user(params)
+  def register(%{user: user_params}, _info) do
+    Accounts.create_user(user_params)
+
+    with {:ok, user} <- Monkey.Accounts.Auth.authenticate(user_params),
+         {:ok, jwt, _full_claims} <- MonkeyWeb.Guardian.encode_and_sign(user) do
+      {:ok, %{token: jwt, user: user}}
+    end
   end
 
   def login(_, %{context: %{current_user: _current_user}}) do
@@ -31,7 +30,7 @@ defmodule MonkeyWeb.Resolvers.Accounts do
   def login(params, _info) do
     with {:ok, user} <- Monkey.Accounts.Auth.authenticate(params),
          {:ok, jwt, _full_claims} <- MonkeyWeb.Guardian.encode_and_sign(user) do
-      {:ok, %{token: jwt}}
+      {:ok, %{token: jwt, user: user}}
     end
   end
 
@@ -40,6 +39,24 @@ defmodule MonkeyWeb.Resolvers.Accounts do
   end
 
   def viewer(_, _) do
+    {:error, "You are not authenticated."}
+  end
+
+  def update_viewer(%{user: user_params}, %{context: %{current_user: current_user}}) do
+    current_user
+    |> User.changeset(user_params)
+    |> Repo.update()
+  end
+
+  def update_viewer(_, _) do
+    {:error, "You are not authenticated."}
+  end
+
+  def delete_viewer(_params, %{context: %{current_user: current_user}}) do
+    Repo.delete(current_user)
+  end
+
+  def delete_viewer(_, _) do
     {:error, "You are not authenticated."}
   end
 end

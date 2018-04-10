@@ -5,8 +5,8 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
   alias Monkey.Datapoints.{Image, Text, Video}
 
   object :data_type do
-    field(:name, :string)
-    field(:label_types, non_null(list_of(non_null(:data_type))), resolve: assoc(:label_types))
+    field(:name, non_null(:string))
+    field(:label_types, non_null(list_of(non_null(:label_type))), resolve: assoc(:label_types))
   end
 
   union :datapoint do

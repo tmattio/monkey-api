@@ -11,8 +11,8 @@ defmodule MonkeyWeb.Schema.LabelTypes do
   }
 
   object :label_type do
-    field(:name, :string)
-    field(:data_type, :data_type, resolve: assoc(:data_type))
+    field(:name, non_null(:string))
+    field(:data_type, non_null(:data_type), resolve: assoc(:data_type))
   end
 
   union :label do

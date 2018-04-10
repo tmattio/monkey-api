@@ -102,6 +102,25 @@ defmodule Monkey.Datasets do
     Dataset.changeset(dataset, %{})
   end
 
+  @doc """
+  Gets a single dataset.
+
+  ## Examples
+
+      iex> get_dataset("monkey-user", "dataset-name")
+      %Dataset{}
+
+  """
+  def get_dataset(owner, name) do
+    Repo.one(
+      from(
+        d in Dataset,
+        join: u in assoc(d, :user_owner),
+        where: u.username == ^owner and d.slug == ^name
+      )
+    )
+  end
+
   @search [Dataset]
   def search_datasets(term) do
     pattern = "%#{term}%"
@@ -110,7 +129,10 @@ defmodule Monkey.Datasets do
 
   defp search_ecto(ecto_schema, pattern) do
     Repo.all(
-      from(q in ecto_schema, where: ilike(q.name, ^pattern) or ilike(q.description, ^pattern))
+      from(
+        q in ecto_schema,
+        where: (ilike(q.name, ^pattern) or ilike(q.description, ^pattern)) and q.is_private == false
+      )
     )
   end
 

@@ -4,8 +4,8 @@ defmodule Monkey.Repo.Migrations.CreateLabelImageClassDefinitions do
   def change do
     create table(:label_image_class_definitions) do
       add(:classes, {:array, :string})
-      add(:label_type_id, references(:datasets, on_delete: :nothing))
-      add(:dataset_id, references(:datasets, on_delete: :nothing))
+      add(:label_type_id, references(:datasets, on_delete: :delete_all))
+      add(:dataset_id, references(:datasets, on_delete: :delete_all))
 
       timestamps()
     end

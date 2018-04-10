@@ -11,20 +11,20 @@ defmodule MonkeyWeb.Schema.AccountTypes do
     field(:avatar_url, :string)
     field(:bio, :string)
     field(:company, :string)
-    field(:email, :string)
-    field(:is_active, :boolean)
+    field(:email, non_null(:string))
+    field(:is_active, non_null(:boolean))
     field(:last_login, :datetime)
-    field(:name, :string)
-    field(:username, :string)
+    field(:name, non_null(:string))
+    field(:username, non_null(:string))
     field(:website_url, :string)
 
     field(:organization, :organization, resolve: assoc(:organization))
-    field(:datasets, list_of(:dataset), resolve: assoc(:datasets))
+    field(:datasets, non_null(list_of(non_null(:dataset))), resolve: assoc(:datasets))
 
-    field(:followers, list_of(:user))
-    field(:following, list_of(:user))
-    field(:starred_datasets, list_of(:dataset))
-    field(:followed_datasets, list_of(:dataset))
+    field(:followers, non_null(list_of(non_null(:user))))
+    field(:following, non_null(list_of(non_null(:user))))
+    field(:starred_datasets, non_null(list_of(non_null(:dataset))))
+    field(:followed_datasets, non_null(list_of(non_null(:dataset))))
   end
 
   object :organization do
@@ -44,7 +44,8 @@ defmodule MonkeyWeb.Schema.AccountTypes do
   end
 
   object :session do
-    field(:token, :string)
+    field(:token, non_null(:string))
+    field(:user, non_null(:user))
   end
 
   input_object :update_user_input do

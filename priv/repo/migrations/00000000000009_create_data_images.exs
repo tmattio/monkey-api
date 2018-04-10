@@ -10,7 +10,7 @@ defmodule Monkey.Repo.Migrations.CreateDataImages do
       add(:height, :integer)
       add(:depth, :integer)
       add(:compression_format, :string)
-      add(:dataset_id, references(:datasets, on_delete: :nothing))
+      add(:dataset_id, references(:datasets, on_delete: :delete_all))
 
       timestamps()
     end

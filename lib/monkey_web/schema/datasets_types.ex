@@ -8,7 +8,7 @@ defmodule MonkeyWeb.Schema.DatasetTypes do
     field(:id, non_null(:id))
 
     @desc "The description of the dataset."
-    field(:description, non_null(:string))
+    field(:description, :string)
 
     @desc "Indicates if the dataset is unmaintained."
     field(:is_archived, non_null(:boolean))
@@ -56,6 +56,7 @@ defmodule MonkeyWeb.Schema.DatasetTypes do
 
   input_object :create_dataset_input do
     field(:name, non_null(:string))
+    field(:description, :string)
     field(:data_type, non_null(:string))
     field(:label_type, non_null(:string))
     field(:label_definition, non_null(:label_definition_input))

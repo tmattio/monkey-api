@@ -3,9 +3,11 @@ defmodule MonkeyWeb.Resolvers.Datasets do
 
   alias Monkey.Repo
   alias Monkey.Datasets.Dataset
+  alias Monkey.Datapoints.DataType
+  alias Monkey.Labels.{LabelType, ImageBoundingBoxDefinition, ImageClassDefinition}
 
   def get_dataset(%{owner: owner, name: name}, %Absinthe.Resolution{} = info) do
-    dataset = Repo.get_by(Dataset, name: name)
+    dataset = Monkey.Datasets.get_dataset(owner, name)
 
     queried_fields =
       Absinthe.Resolution.project(info)
@@ -75,20 +77,76 @@ defmodule MonkeyWeb.Resolvers.Datasets do
     {:ok, Monkey.Datasets.search_datasets(term)}
   end
 
-  def create_dataset(args, _info) do
-    %Dataset{}
-    |> Dataset.changeset(args)
-    |> Repo.insert()
+  def create_dataset(%{dataset: args}, %{context: %{current_user: current_user}}) do
+    # TODO(tmattio): Investigate on how to make it atomic, we don't want a label definition
+    # without a dataset or a dataset without label definition
+
+    data_type = Repo.get_by!(DataType, name: args.data_type)
+    label_type = Repo.get_by!(LabelType, name: args.label_type)
+
+    label_definition =
+      Enum.filter(args.label_definition, fn x -> x != nil end)
+      |> Enum.at(0)
+
+    dataset_args = %{
+      data_type_id: data_type.id,
+      label_type_id: label_type.id,
+      user_owner_id: current_user.id,
+      name: args.name,
+      description: Map.get(args, :description)
+    }
+
+    {:ok, dataset} =
+      %Dataset{}
+      |> Dataset.changeset(dataset_args)
+      |> Repo.insert()
+
+    changeset =
+      case label_definition do
+        {:image_class_definition, struct} ->
+          %ImageClassDefinition{}
+          |> ImageClassDefinition.changeset(Map.put(struct, :dataset_id, dataset.id))
+
+        {:image_bounding_box_definition, struct} ->
+          %ImageBoundingBoxDefinition{}
+          |> ImageBoundingBoxDefinition.changeset(Map.put(struct, :dataset_id, dataset.id))
+      end
+
+    {:ok, _label_definition} = Repo.insert(changeset)
+
+    {:ok, dataset}
   end
 
-  def update_dataset(%{id: id, dataset: dataset_params}, _info) do
-    Repo.get!(Dataset, id)
-    |> Dataset.changeset(dataset_params)
-    |> Repo.update()
+  def create_dataset(_, _) do
+    {:error, "You are not authenticated."}
   end
 
-  def delete_dataset(%{id: id}, _info) do
-    dataset = Repo.get!(Dataset, id)
-    Repo.delete(dataset)
+  def update_dataset(%{owner: owner, name: name, dataset: dataset_params}, %{
+        context: %{current_user: current_user}
+      }) do
+    if owner == current_user.username do
+      Monkey.Datasets.get_dataset(owner, name)
+      |> Dataset.changeset(dataset_params)
+      |> Repo.update()
+    else
+      {:error, "Only the owner of a dataset can update it."}
+    end
+  end
+
+  def update_dataset(_, _) do
+    {:error, "You are not authenticated."}
+  end
+
+  def delete_dataset(%{owner: owner, name: name}, %{context: %{current_user: current_user}}) do
+    if owner == current_user.username do
+      dataset = Monkey.Datasets.get_dataset(owner, name)
+      Repo.delete(dataset)
+    else
+      {:error, "Only the owner of a dataset can delete it."}
+    end
+  end
+
+  def delete_dataset(_, _) do
+    {:error, "You are not authenticated."}
   end
 end
