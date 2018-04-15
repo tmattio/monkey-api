@@ -57,7 +57,7 @@ defmodule MonkeyWeb.Schema.Query.DatasetsTest do
     }
   }
   """
-  test "dataset returns a dataset when match" do
+  test "dataset returns a dataset when match and public" do
     conn = build_conn()
 
     dataset =
@@ -78,6 +78,12 @@ defmodule MonkeyWeb.Schema.Query.DatasetsTest do
                "dataset" => %{"name" => dataset.name}
              }
            }
+  end
+
+  @query """
+  """
+  test "dataset does not returns a dataset when match and private" do
+    # TODO(tmattio): Implement
   end
 
   @query """
@@ -140,5 +146,41 @@ defmodule MonkeyWeb.Schema.Query.DatasetsTest do
                ]
              }
            }
+  end
+
+  @query """
+  """
+  test "datapoint returns a dataset when match" do
+    # TODO(tmattio): Implement
+  end
+
+  @query """
+  """
+  test "datapoint does not returns a dataset when no match" do
+    # TODO(tmattio): Implement
+  end
+
+  @query """
+  """
+  test "label returns a dataset when match" do
+    # TODO(tmattio): Implement
+  end
+
+  @query """
+  """
+  test "label does not returns a dataset when no match" do
+    # TODO(tmattio): Implement
+  end
+
+  @query """
+  """
+  test "exportDataset when user has the rights exports the dataset" do
+    # TODO(tmattio): Implement
+  end
+
+  @query """
+  """
+  test "exportDataset when user does not have the rights returns an error" do
+    # TODO(tmattio): Implement
   end
 end
