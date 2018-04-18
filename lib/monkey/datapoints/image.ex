@@ -19,8 +19,8 @@ defmodule Monkey.Datapoints.Image do
 
     belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
 
-    has_many(:label_image_classes, Labels.ImageClass, foreign_key: :datapoint_id)
-    has_many(:label_image_bounding_boxes, Labels.ImageBoundingBox, foreign_key: :datapoint_id)
+    has_one(:label_image_class, Labels.ImageClass, foreign_key: :datapoint_id)
+    has_one(:label_image_bounding_box, Labels.ImageBoundingBox, foreign_key: :datapoint_id)
 
     timestamps()
   end

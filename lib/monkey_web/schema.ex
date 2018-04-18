@@ -20,6 +20,7 @@ defmodule MonkeyWeb.Schema do
     [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
   end
 
+  import_types(Absinthe.Plug.Types)
   import_types(Absinthe.Type.Custom)
 
   import_types(__MODULE__.AccountTypes)
@@ -79,18 +80,51 @@ defmodule MonkeyWeb.Schema do
     end
 
     field :update_dataset, type: :dataset do
+      @desc "The login field of a user or organization."
       arg(:owner, non_null(:string))
+
+      @desc "The unique name of the dataset."
       arg(:name, non_null(:string))
+
       arg(:dataset, non_null(:update_dataset_input))
 
       resolve(&Resolvers.Datasets.update_dataset/2)
     end
 
     field :delete_dataset, type: :dataset do
+      @desc "The login field of a user or organization."
       arg(:owner, non_null(:string))
+
+      @desc "The unique name of the dataset."
       arg(:name, non_null(:string))
 
       resolve(&Resolvers.Datasets.delete_dataset/2)
+    end
+
+    field :upload_datapoints, type: list_of(non_null(:datapoint)) do
+      @desc "The login field of a user or organization."
+      arg(:owner, non_null(:string))
+
+      @desc "The unique name of the dataset."
+      arg(:name, non_null(:string))
+
+      @desc "The list of datapoints to upload to the dataset."
+      arg(:datapoints, non_null(list_of(non_null(:datapoint_input))))
+
+      resolve(&Resolvers.Datapoints.upload_datapoints/2)
+    end
+
+    field :update_labels, type: :label do
+      @desc "The login field of a user or organization."
+      arg(:owner, non_null(:string))
+
+      @desc "The unique name of the dataset."
+      arg(:name, non_null(:string))
+
+      @desc "The list of datapoints to upload to the dataset."
+      arg(:datapoints, non_null(list_of(non_null(:datapoint_input))))
+
+      resolve(&Resolvers.Datapoints.upload_datapoints/2)
     end
 
     field :update_viewer, type: :user do
