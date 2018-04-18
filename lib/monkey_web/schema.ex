@@ -1,5 +1,6 @@
 defmodule MonkeyWeb.Schema do
   use Absinthe.Schema
+  use Absinthe.Relay.Schema, :modern
 
   alias MonkeyWeb.Resolvers
   alias Monkey.Datasets
@@ -26,6 +27,9 @@ defmodule MonkeyWeb.Schema do
   import_types(__MODULE__.DatasetTypes)
   import_types(__MODULE__.LabelTypes)
 
+  connection(node_type: :dataset)
+  connection(node_type: :datapoint)
+
   @desc "The query root of Monkey's GraphQL interface."
   query do
     @desc "Lookup a given dataset by the owner and dataset name."
@@ -40,19 +44,7 @@ defmodule MonkeyWeb.Schema do
     end
 
     @desc "Perform a search across datasets."
-    field :search_datasets, list_of(:dataset) do
-      @desc "Returns the first n elements from the list."
-      arg(:first, :integer)
-
-      @desc "Returns the elements in the list that come after the specified global ID."
-      arg(:after, :string)
-
-      @desc "Returns the last n elements from the list."
-      arg(:last, :integer)
-
-      @desc "Returns the elements in the list that come before the specified global ID."
-      arg(:before, :string)
-
+    connection field(:search_datasets, node_type: :dataset) do
       @desc "The search string to look for."
       arg(:query, non_null(:string))
 
@@ -108,7 +100,6 @@ defmodule MonkeyWeb.Schema do
     end
 
     field :delete_viewer, type: :user do
-
       resolve(&Resolvers.Accounts.delete_viewer/2)
     end
 

@@ -42,6 +42,7 @@ defmodule Monkey.Mixfile do
       {:absinthe, "~> 1.4.9"},
       {:absinthe_ecto, "~> 0.1.3"},
       {:absinthe_plug, "~> 1.4.2"},
+      {:absinthe_relay, "~> 1.4.0-rc or ~> 1.4"},
       {:poison, "~> 3.1.0"},
       {:faker, "~> 0.9.0"},
       {:guardian, "~> 1.0"},

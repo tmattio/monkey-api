@@ -13,38 +13,6 @@ defmodule MonkeyWeb.Resolvers.Datasets do
       Absinthe.Resolution.project(info)
       |> Enum.map(& &1.name)
 
-    datapoints =
-      if Enum.member?(queried_fields, "datapoints") do
-        data_type = Ecto.assoc(dataset, :data_type) |> Repo.one()
-
-        case data_type.name do
-          "Image" -> Ecto.assoc(dataset, :data_images) |> Repo.all()
-          "Video" -> Ecto.assoc(dataset, :data_videos) |> Repo.all()
-          "Text" -> Ecto.assoc(dataset, :data_texts) |> Repo.all()
-          _ -> []
-        end
-      else
-        []
-      end
-
-    labels =
-      if Enum.member?(queried_fields, "labels") do
-        label_type = Ecto.assoc(dataset, :label_type) |> Repo.one()
-
-        case label_type.name do
-          "Image Classification" ->
-            Ecto.assoc(dataset, :label_image_classes) |> Repo.all()
-
-          "Image Object Detection" ->
-            Ecto.assoc(dataset, :label_image_bounding_boxes) |> Repo.all()
-
-          _ ->
-            []
-        end
-      else
-        []
-      end
-
     label_definition =
       if Enum.member?(queried_fields, "labelDefinition") do
         # TODO(tmattio): We query twice for the label type, refactor this.
@@ -66,15 +34,14 @@ defmodule MonkeyWeb.Resolvers.Datasets do
 
     loaded_dataset =
       dataset
-      |> Map.put_new(:datapoints, datapoints)
-      |> Map.put_new(:labels, labels)
       |> Map.put_new(:label_definition, label_definition)
 
     {:ok, loaded_dataset}
   end
 
-  def search_datasets(%{query: term}, _) do
-    {:ok, Monkey.Datasets.search_datasets(term)}
+  def search_datasets(args, _) do
+    Monkey.Datasets.search_datasets(args.query)
+    |> Absinthe.Relay.Connection.from_list(args)
   end
 
   def create_dataset(%{dataset: args}, %{context: %{current_user: current_user}}) do

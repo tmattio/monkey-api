@@ -1,6 +1,10 @@
 defmodule MonkeyWeb.Schema.DatasetTypes do
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
+
   use Absinthe.Ecto, repo: Monkey.Repo
+
+  alias MonkeyWeb.Resolvers
 
   @desc "A repository contains labels for a set of data."
   object :dataset do
@@ -40,8 +44,10 @@ defmodule MonkeyWeb.Schema.DatasetTypes do
     @desc "The User owner of the repository."
     field(:owner, non_null(:user), resolve: assoc(:user_owner))
 
-    field(:datapoints, non_null(list_of(non_null(:datapoint))))
-    field(:labels, non_null(list_of(non_null(:label))))
+    @desc "Get the datapoints of a dataset."
+    connection field(:datapoints, node_type: :datapoint) do
+      resolve(&Resolvers.Datapoints.get_datapoints/2)
+    end
   end
 
   input_object :update_dataset_input do
