@@ -10,8 +10,9 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
     field(:label_types, non_null(list_of(non_null(:label_type))), resolve: assoc(:label_types))
   end
 
-  union :datapoint do
-    types([:image, :text, :video])
+  interface :datapoint do
+    field(:id, non_null(:id))
+    field(:labels, non_null(list_of(non_null(:label))))
 
     resolve_type(fn
       %Image{}, _ -> :image
@@ -29,12 +30,18 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
     field(:height, :integer)
     field(:storage_path, :string)
     field(:width, :integer)
+    field(:labels, non_null(list_of(non_null(:label))))
+
+    interface :datapoint
   end
 
   object :text do
     field(:id, non_null(:id))
     field(:body, :string)
     field(:length, :integer)
+    field(:labels, non_null(list_of(non_null(:label))))
+
+    interface :datapoint
   end
 
   object :video do
@@ -46,5 +53,8 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
     field(:height, :integer)
     field(:storage_path, :string)
     field(:width, :integer)
+    field(:labels, non_null(list_of(non_null(:label))))
+
+    interface :datapoint
   end
 end

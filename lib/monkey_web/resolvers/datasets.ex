@@ -1,5 +1,5 @@
 defmodule MonkeyWeb.Resolvers.Datasets do
-  import Ecto.Query, only: [where: 2]
+  import Ecto.Query
 
   alias Monkey.Repo
   alias Monkey.Datasets.Dataset
@@ -9,16 +9,23 @@ defmodule MonkeyWeb.Resolvers.Datasets do
   def get_dataset(%{owner: owner, name: name}, %Absinthe.Resolution{} = info) do
     dataset = Monkey.Datasets.get_dataset(owner, name)
 
+    dataset =
+      Repo.one(
+        from(
+          d in Dataset,
+          join: u in assoc(d, :user_owner),
+          where: u.username == ^owner and d.slug == ^name,
+          preload: [:data_type, :label_type]
+        )
+      )
+
     queried_fields =
       Absinthe.Resolution.project(info)
       |> Enum.map(& &1.name)
 
     label_definition =
       if Enum.member?(queried_fields, "labelDefinition") do
-        # TODO(tmattio): We query twice for the label type, refactor this.
-        label_type = Ecto.assoc(dataset, :label_type) |> Repo.one()
-
-        case label_type.name do
+        case dataset.label_type.name do
           "Image Classification" ->
             Ecto.assoc(dataset, :label_image_class_definition) |> Repo.one()
 

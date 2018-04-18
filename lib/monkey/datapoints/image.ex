@@ -3,6 +3,7 @@ defmodule Monkey.Datapoints.Image do
   import Ecto.Changeset
 
   alias Monkey.Datasets.Dataset
+  alias Monkey.Labels
 
   @required_fields ~w(compression_format depth filesize height storage_path width dataset_id)a
   @optional_fields ~w(caption)a
@@ -17,6 +18,9 @@ defmodule Monkey.Datapoints.Image do
     field(:width, :integer)
 
     belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
+
+    has_many(:label_image_classes, Labels.ImageClass, foreign_key: :datapoint_id)
+    has_many(:label_image_bounding_boxes, Labels.ImageBoundingBox, foreign_key: :datapoint_id)
 
     timestamps()
   end
