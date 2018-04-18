@@ -1,4 +1,4 @@
-defmodule MonkeyWeb.Schema.Query.AccountsTest do
+defmodule MonkeyWeb.Schema.Mutation.DatapointsTest do
   use MonkeyWeb.ConnCase, async: true
 
   alias Monkey.Accounts.{User, Organization}
