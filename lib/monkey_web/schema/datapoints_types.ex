@@ -14,7 +14,7 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
 
   interface :datapoint do
     field(:id, non_null(:id))
-    field(:label, :label)
+    field(:labels, non_null(list_of(non_null(:label))))
 
     resolve_type(fn
       %Image{}, _ -> :image
@@ -33,8 +33,8 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
     field(:storage_path, non_null(:string))
     field(:width, non_null(:integer))
 
-    field :label, type: :label do
-      resolve(&Resolvers.Labels.get_label/3)
+    field :labels, type: non_null(list_of(non_null(:label))) do
+      resolve(&Resolvers.Labels.get_labels/3)
     end
 
     interface(:datapoint)
@@ -44,7 +44,7 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
     field(:id, non_null(:id))
     field(:body, non_null(:string))
     field(:length, non_null(:integer))
-    field(:label, :label)
+    field(:labels, non_null(list_of(non_null(:label))))
 
     interface(:datapoint)
   end
@@ -58,18 +58,29 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
     field(:height, non_null(:integer))
     field(:storage_path, non_null(:string))
     field(:width, non_null(:integer))
-    field(:label, :label)
+    field(:labels, non_null(list_of(non_null(:label))))
 
     interface(:datapoint)
   end
 
-  input_object :image_input do
+  input_object :remote_image_input do
     field(:caption, :string)
-    field(:content, non_null(:upload))
+    field(:compression_format, non_null(:string))
+    field(:depth, non_null(:integer))
+    field(:filesize, non_null(:integer))
+    field(:height, non_null(:integer))
+    field(:storage_path, non_null(:string))
+    field(:width, non_null(:integer))
+  end
+
+  input_object :upload_image_input do
+    field(:caption, :string)
+    field(:compression_format, non_null(:string))
+    field(:content, non_null(:string))
   end
 
   input_object :text_input do
-    field(:content, non_null(:upload))
+    field(:content, non_null(:string))
   end
 
   input_object :video_input do
@@ -78,7 +89,8 @@ defmodule MonkeyWeb.Schema.DatapointTypes do
   end
 
   input_object :datapoint_input do
-    field(:image, :image_input)
+    field(:remote_image, :remote_image_input)
+    field(:upload_image, :upload_image_input)
     field(:text, :text_input)
     field(:video, :video_input)
   end

@@ -7,6 +7,8 @@ defmodule Monkey.Datasets do
   alias Monkey.Repo
 
   alias Monkey.Datasets.Dataset
+  alias Monkey.Labels
+  alias Monkey.Datapoints
 
   @doc """
   Returns the list of datasets.
@@ -116,7 +118,19 @@ defmodule Monkey.Datasets do
       from(
         d in Dataset,
         join: u in assoc(d, :user_owner),
-        where: u.username == ^owner and d.slug == ^name
+        where: u.username == ^owner and d.slug == ^name,
+        preload: [:data_type, :label_type, user_owner: u]
+      )
+    )
+  end
+
+  def get_dataset!(owner, name) do
+    Repo.one!(
+      from(
+        d in Dataset,
+        join: u in assoc(d, :user_owner),
+        where: u.username == ^owner and d.slug == ^name,
+        preload: [:data_type, :label_type, :user_owner]
       )
     )
   end
@@ -131,7 +145,8 @@ defmodule Monkey.Datasets do
     Repo.all(
       from(
         q in ecto_schema,
-        where: (ilike(q.name, ^pattern) or ilike(q.description, ^pattern)) and q.is_private == false
+        where:
+          (ilike(q.name, ^pattern) or ilike(q.description, ^pattern)) and q.is_private == false
       )
     )
   end
@@ -142,5 +157,31 @@ defmodule Monkey.Datasets do
 
   def query(queryable, _params) do
     queryable
+  end
+
+  def export_dataset(dataset) do
+    data_type = Datapoints.data_type_from_name(dataset.data_type.name)
+    {label_type, _label_def} = Labels.label_type_from_name(dataset.label_type.name)
+
+    datapoints_to_labels =
+      from(
+        d in data_type,
+        where: d.dataset_id == ^dataset.id,
+        join: l in ^label_type,
+        on: l.dataset_id == ^dataset.id and l.datapoint_id == d.id,
+        select: {d, l}
+      )
+      |> Repo.all()
+      |> Enum.map(fn {d, l} ->
+        %{
+          datapoint: d,
+          label: l
+        }
+      end)
+
+    content = Poison.encode!(datapoints_to_labels)
+    filename = dataset.user_owner.username <> "-" <> dataset.slug <> ".json"
+    File.write!("exported_datasets/" <> filename, content, [:write])
+    filename
   end
 end

@@ -50,6 +50,10 @@ defmodule MonkeyWeb.Schema.DatasetTypes do
     end
   end
 
+  object :dataset_export_payload do
+    field(:export_url, :string)
+  end
+
   input_object :update_dataset_input do
     field(:name, :string)
     field(:description, :string)

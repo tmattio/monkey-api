@@ -3,6 +3,7 @@ defmodule Monkey.Labels.LabelType do
   import Ecto.Changeset
 
   alias Monkey.Datapoints.DataType
+  alias Monkey.Labels
 
   @required_fields ~w(name data_type_id)a
 

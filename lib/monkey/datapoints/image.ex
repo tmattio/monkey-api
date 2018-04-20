@@ -19,8 +19,8 @@ defmodule Monkey.Datapoints.Image do
 
     belongs_to(:dataset, Dataset, foreign_key: :dataset_id)
 
-    has_one(:label_image_class, Labels.ImageClass, foreign_key: :datapoint_id)
-    has_one(:label_image_bounding_box, Labels.ImageBoundingBox, foreign_key: :datapoint_id)
+    has_many(:label_image_classes, Labels.ImageClass, foreign_key: :datapoint_id)
+    has_many(:label_image_bounding_boxes, Labels.ImageBoundingBox, foreign_key: :datapoint_id)
 
     timestamps()
   end
@@ -32,5 +32,33 @@ defmodule Monkey.Datapoints.Image do
     |> validate_required(@required_fields)
     |> unique_constraint(:storage_path)
     |> assoc_constraint(:dataset)
+  end
+
+  def upload_image(base64_content) do
+    {start, length} = :binary.match(base64_content, ";base64,")
+    encoding = :binary.part(base64_content, 0, start)
+
+    case encoding do
+      "data:image/" <> compression ->
+        raw =
+          :binary.part(base64_content, start + length, byte_size(base64_content) - start - length)
+
+        data = Base.decode64!(raw)
+        filename = "images/" <> UUID.uuid4() <> "." <> compression
+        File.write!(filename, data)
+
+        {:ok,
+         %{
+           compression_format: compression,
+           depth: 0,
+           filesize: 0,
+           height: 0,
+           storage_path: filename,
+           width: 0
+         }}
+
+      _ ->
+        {:error, "The base64 string is not valid. Make sure it contains the mime type."}
+    end
   end
 end

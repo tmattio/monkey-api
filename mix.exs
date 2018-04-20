@@ -50,6 +50,7 @@ defmodule Monkey.Mixfile do
       {:bcrypt_elixir, "~> 1.0"},
       {:cors_plug, "~> 1.5"},
       {:dataloader, "~> 1.0.0"},
+      { :uuid, "~> 1.1" },
       {:ex_machina, "~> 2.2", only: :test}
     ]
   end

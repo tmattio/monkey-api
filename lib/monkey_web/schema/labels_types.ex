@@ -41,6 +41,18 @@ defmodule MonkeyWeb.Schema.LabelTypes do
     field(:datapoint, non_null(:image), resolve: assoc(:datapoint))
   end
 
+  input_object :image_class_input do
+    field(:class, :string)
+  end
+
+  input_object :image_bounding_box_input do
+    field(:class, :string)
+    field(:x_max, :float)
+    field(:x_min, :float)
+    field(:y_max, :float)
+    field(:y_min, :float)
+  end
+
   union :label_definition do
     types([:image_class_definition, :image_bounding_box_definition])
 
@@ -73,5 +85,10 @@ defmodule MonkeyWeb.Schema.LabelTypes do
   input_object :label_definition_input do
     field(:image_class_definition, :image_class_definition_input)
     field(:image_bounding_box_definition, :image_bounding_box_definition_input)
+  end
+
+  input_object :label_input do
+    field(:image_class, :image_class_input)
+    field(:image_bounding_box, :image_bounding_box_input)
   end
 end

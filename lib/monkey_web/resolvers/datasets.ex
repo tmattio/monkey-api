@@ -7,8 +7,6 @@ defmodule MonkeyWeb.Resolvers.Datasets do
   alias Monkey.Labels.{LabelType, ImageBoundingBoxDefinition, ImageClassDefinition}
 
   def get_dataset(%{owner: owner, name: name}, %Absinthe.Resolution{} = info) do
-    dataset = Monkey.Datasets.get_dataset(owner, name)
-
     dataset =
       Repo.one(
         from(
@@ -19,31 +17,37 @@ defmodule MonkeyWeb.Resolvers.Datasets do
         )
       )
 
-    queried_fields =
-      Absinthe.Resolution.project(info)
-      |> Enum.map(& &1.name)
+    case dataset do
+      nil ->
+        {:error, "Dataset not found"}
 
-    label_definition =
-      if Enum.member?(queried_fields, "labelDefinition") do
-        case dataset.label_type.name do
-          "Image Classification" ->
-            Ecto.assoc(dataset, :label_image_class_definition) |> Repo.one()
+      _ ->
+        queried_fields =
+          Absinthe.Resolution.project(info)
+          |> Enum.map(& &1.name)
 
-          "Image Object Detection" ->
-            Ecto.assoc(dataset, :label_image_bounding_box_definition) |> Repo.one()
+        label_definition =
+          if Enum.member?(queried_fields, "labelDefinition") do
+            case dataset.label_type.name do
+              "Image Classification" ->
+                Ecto.assoc(dataset, :label_image_class_definition) |> Repo.one()
 
-          _ ->
+              "Image Object Detection" ->
+                Ecto.assoc(dataset, :label_image_bounding_box_definition) |> Repo.one()
+
+              _ ->
+                nil
+            end
+          else
             nil
-        end
-      else
-        nil
-      end
+          end
 
-    loaded_dataset =
-      dataset
-      |> Map.put_new(:label_definition, label_definition)
+        loaded_dataset =
+          dataset
+          |> Map.put_new(:label_definition, label_definition)
 
-    {:ok, loaded_dataset}
+        {:ok, loaded_dataset}
+    end
   end
 
   def search_datasets(args, _) do
@@ -114,13 +118,34 @@ defmodule MonkeyWeb.Resolvers.Datasets do
   def delete_dataset(%{owner: owner, name: name}, %{context: %{current_user: current_user}}) do
     if owner == current_user.username do
       dataset = Monkey.Datasets.get_dataset(owner, name)
-      Repo.delete(dataset)
+
+      case dataset do
+        nil ->
+          {:error, "Dataset not found."}
+
+        _ ->
+          Repo.delete(dataset)
+      end
     else
       {:error, "Only the owner of a dataset can delete it."}
     end
   end
 
   def delete_dataset(_, _) do
+    {:error, "You are not authenticated."}
+  end
+
+  def export_dataset(%{owner: owner, name: name}, %{context: %{current_user: current_user}}) do
+    if owner == current_user.username do
+      dataset = Monkey.Datasets.get_dataset(owner, name)
+      stored_file = Monkey.Datasets.export_dataset(dataset)
+      {:ok, %{export_url: stored_file}}
+    else
+      {:error, "Only the owner of a dataset can delete it."}
+    end
+  end
+
+  def export_dataset(_, _) do
     {:error, "You are not authenticated."}
   end
 end

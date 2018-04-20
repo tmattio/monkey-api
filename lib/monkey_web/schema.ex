@@ -114,17 +114,30 @@ defmodule MonkeyWeb.Schema do
       resolve(&Resolvers.Datapoints.upload_datapoints/2)
     end
 
-    field :update_labels, type: :label do
+    field :update_label, type: :label do
       @desc "The login field of a user or organization."
       arg(:owner, non_null(:string))
 
       @desc "The unique name of the dataset."
       arg(:name, non_null(:string))
 
-      @desc "The list of datapoints to upload to the dataset."
-      arg(:datapoints, non_null(list_of(non_null(:datapoint_input))))
+      @desc "The unique identifier of the datapoint to label."
+      arg(:datapoint_id, non_null(:id))
 
-      resolve(&Resolvers.Datapoints.upload_datapoints/2)
+      @desc "The label to add to the dataset."
+      arg(:label, non_null(:label_input))
+
+      resolve(&Resolvers.Labels.update_label/2)
+    end
+
+    field :export_dataset, type: :dataset_export_payload do
+      @desc "The login field of a user or organization."
+      arg(:owner, non_null(:string))
+
+      @desc "The unique name of the dataset."
+      arg(:name, non_null(:string))
+
+      resolve(&Resolvers.Datasets.export_dataset/2)
     end
 
     field :update_viewer, type: :user do

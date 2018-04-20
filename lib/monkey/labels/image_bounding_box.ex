@@ -27,5 +27,10 @@ defmodule Monkey.Labels.ImageBoundingBox do
     |> validate_required(@required_fields)
     |> assoc_constraint(:dataset)
     |> assoc_constraint(:datapoint)
+    |> unique_constraint(:datapoint_id)
+    |> unique_constraint(
+      :label,
+      name: :label_image_bounding_boxes_dataset_id_datapoint_id_index
+    )
   end
 end

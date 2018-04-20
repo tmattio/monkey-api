@@ -12,5 +12,12 @@ defmodule Monkey.Repo.Migrations.CreateLabelImageClasses do
 
     create(index(:label_image_classes, [:dataset_id]))
     create(index(:label_image_classes, [:datapoint_id]))
+
+    create(
+      unique_index(
+        :label_image_classes,
+        [:dataset_id, :datapoint_id]
+      )
+    )
   end
 end

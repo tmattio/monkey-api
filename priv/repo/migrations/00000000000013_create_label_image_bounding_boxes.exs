@@ -16,5 +16,12 @@ defmodule Monkey.Repo.Migrations.CreateLabelImageBoundingBoxes do
 
     create(index(:label_image_bounding_boxes, [:dataset_id]))
     create(index(:label_image_bounding_boxes, [:datapoint_id]))
+
+    create(
+      unique_index(
+        :label_image_bounding_boxes,
+        [:dataset_id, :datapoint_id]
+      )
+    )
   end
 end
